@@ -1,0 +1,9 @@
+{
+  "name": "electrical-lab-3d",
+  "description": "为日光灯/磁镇流器/启辉器/电工实训板构建 Blender 与 Three.js 的实物级三维网页实训。适用于创建真实元件模型、自由接线端子与导线、通电状态机、故障注入、教学评分和 Codex 自动验收；先检查电气逻辑，再实现可视化。",
+  "relative": "codex-skills/electrical-lab-3d/SKILL.md",
+  "status": "portable-custom",
+  "reason": "保留专用技能和资源；需要的 MCP/本地软件必须实际可用。",
+  "sha256": "c32867eb2dc32507b9072bff6bad62f32b0aaa5559cbd182b487f86d5becd1fe",
+  "claude_name": "electrical-lab-3d"
+}

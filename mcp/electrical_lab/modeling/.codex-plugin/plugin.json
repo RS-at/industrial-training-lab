@@ -1,0 +1,6 @@
+{
+  "name": "electrical-training-lab",
+  "version": "3.0.0",
+  "description": "Vocational industrial training asset and custom machine authoring, with 16 local MCP tools (illustrative SVG only), fluorescent demo and industrial planning",
+  "skills": "./skills/"
+}

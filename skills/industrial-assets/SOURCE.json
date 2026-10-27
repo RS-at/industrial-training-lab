@@ -1,0 +1,9 @@
+{
+  "name": "industrial-assets",
+  "description": "工业实训素材及非标设备建模规范；从照片、尺寸、CAD、接线图和动作视频创建SVG/2.5D/3D资源的可追溯规格，核验真实端子、版权和CPU/GPU渲染策略。Use for industrial automation assets, custom machines, electrical training visual models, motion and rendering.",
+  "relative": "codex-skills/industrial-assets/SKILL.md",
+  "status": "portable-custom",
+  "reason": "保留专用技能和资源；需要的 MCP/本地软件必须实际可用。",
+  "sha256": "009444e4e64f227fad66bebdcce66991ae21850468e06077e274ad9564624f00",
+  "claude_name": "industrial-assets"
+}

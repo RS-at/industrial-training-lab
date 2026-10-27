@@ -1,0 +1,9 @@
+{
+  "name": "industrial-blender-v3",
+  "description": "Operate the single local Blender MCP with official DSH backend, native modeling, visual iteration, asset reuse, and task-specific industrial validation.",
+  "relative": "codex-skills/industrial-blender-v3/SKILL.md",
+  "status": "portable-custom",
+  "reason": "保留专用技能和资源；需要的 MCP/本地软件必须实际可用。",
+  "sha256": "c06b4e8a4915ad3fc6b8c8deaf1d7fdfa97b051ed29bc0fbff088035f6adaa69",
+  "claude_name": "industrial-blender-v3"
+}

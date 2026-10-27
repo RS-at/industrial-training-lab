@@ -1,0 +1,816 @@
+{
+  "schema_version": "2.0",
+  "description": "教学元件家族索引，不等于设备厂家端子规格和完整仿真模型",
+  "status_legend": {
+    "teaching_logic_simulation": "已提供可运行的教学逻辑仿真",
+    "catalog_only": "已建元件家族条目，尚无设备级仿真及已核对端子"
+  },
+  "categories": [
+    {
+      "id": "robotics",
+      "name": "工业机器人"
+    },
+    {
+      "id": "plc",
+      "name": "PLC及扩展"
+    },
+    {
+      "id": "hmi",
+      "name": "触摸屏/HMI"
+    },
+    {
+      "id": "motion",
+      "name": "运动控制"
+    },
+    {
+      "id": "motor",
+      "name": "电机及驱动"
+    },
+    {
+      "id": "low_voltage",
+      "name": "低压电器"
+    },
+    {
+      "id": "sensor",
+      "name": "传感器"
+    },
+    {
+      "id": "pneumatic",
+      "name": "气动"
+    },
+    {
+      "id": "network",
+      "name": "工业通信"
+    },
+    {
+      "id": "training",
+      "name": "教学实验"
+    }
+  ],
+  "devices": [
+    {
+      "id": "plc.siemens.s7_1200",
+      "name": "西门子 SIMATIC S7-1200",
+      "category": "plc",
+      "vendor": "Siemens",
+      "signals": [
+        "DI",
+        "DO",
+        "AI",
+        "AO",
+        "network"
+      ],
+      "teaching_behaviors": "扫描周期、I/O 映射、梯形图基本逻辑、故障排查",
+      "model_examples": "S7-1200 CPU 家族",
+      "official_reference": "https://www.ad.siemens.com.cn/download/documentdetail_12472.html",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "plc.siemens.s7_1500",
+      "name": "西门子 SIMATIC S7-1500",
+      "category": "plc",
+      "vendor": "Siemens",
+      "signals": [
+        "DI",
+        "DO",
+        "AI",
+        "AO",
+        "network"
+      ],
+      "teaching_behaviors": "数据块与 PLC 扫描周期示意、I/O 映射、故障排查",
+      "model_examples": "S7-1500 CPU 家族",
+      "official_reference": "https://www.ad.siemens.com.cn/download/documentdetail_12472.html",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "plc.inovance.h3u",
+      "name": "汇川 H3U 系列 PLC",
+      "category": "plc",
+      "vendor": "Inovance",
+      "signals": [
+        "DI",
+        "DO",
+        "serial",
+        "network"
+      ],
+      "teaching_behaviors": "逻辑扫描、X/Y 信号与接线练习（符号化）",
+      "model_examples": "H3U 系列",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "plc.inovance.h5u",
+      "name": "汇川 H5U 系列 PLC",
+      "category": "plc",
+      "vendor": "Inovance",
+      "signals": [
+        "DI",
+        "DO",
+        "network"
+      ],
+      "teaching_behaviors": "I/O 监控、顺序控制、通讯任务（抽象）",
+      "model_examples": "H5U 系列",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "plc.inovance.am600",
+      "name": "汇川 AM600 系列 PLC",
+      "category": "plc",
+      "vendor": "Inovance",
+      "signals": [
+        "DI",
+        "DO",
+        "AI",
+        "AO",
+        "network"
+      ],
+      "teaching_behaviors": "扩展 I/O、模块联动（抽象）",
+      "model_examples": "AM600 系列",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "plc.expansion.digital",
+      "name": "PLC 数字量 I/O 模块",
+      "category": "plc",
+      "vendor": "Generic",
+      "signals": [
+        "DI",
+        "DO"
+      ],
+      "teaching_behaviors": "输入输出映射、端子通断",
+      "model_examples": "通用 24VDC 示例",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "plc.expansion.analog",
+      "name": "PLC 模拟量 I/O 模块",
+      "category": "plc",
+      "vendor": "Generic",
+      "signals": [
+        "AI",
+        "AO"
+      ],
+      "teaching_behaviors": "量程、信号缩放、开路报警示意",
+      "model_examples": "通用 0-10V/4-20mA 示例",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "hmi.mcgs.touch",
+      "name": "昆仑通态 MCGS 触摸屏",
+      "category": "hmi",
+      "vendor": "MCGS",
+      "signals": [
+        "tag",
+        "network",
+        "serial"
+      ],
+      "teaching_behaviors": "按钮、指示灯、页面切换、PLC 变量绑定",
+      "model_examples": "型号待指定",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "hmi.siemens.wincc",
+      "name": "西门子 WinCC HMI",
+      "category": "hmi",
+      "vendor": "Siemens",
+      "signals": [
+        "tag",
+        "network"
+      ],
+      "teaching_behaviors": "画面组态、报警、变量绑定",
+      "model_examples": "KTP/TP 家族",
+      "official_reference": "https://www.ad.siemens.com.cn/download/documentdetail_12472.html",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "hmi.generic",
+      "name": "通用 HMI 面板",
+      "category": "hmi",
+      "vendor": "Generic",
+      "signals": [
+        "tag"
+      ],
+      "teaching_behaviors": "按钮、数值显示、报警",
+      "model_examples": "浏览器教学界面",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "robot.abb",
+      "name": "ABB 工业机器人",
+      "category": "robotics",
+      "vendor": "ABB",
+      "signals": [
+        "robot_io",
+        "network",
+        "safety"
+      ],
+      "teaching_behaviors": "工作站布局、姿态/轨迹概念、I/O 联动示意",
+      "model_examples": "IRB 系列",
+      "official_reference": "https://www.abb.com/global/en/areas/robotics/products/software/robotstudio-suite/robotstudio-desktop",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "robot.kuka",
+      "name": "KUKA 库卡工业机器人",
+      "category": "robotics",
+      "vendor": "KUKA",
+      "signals": [
+        "robot_io",
+        "network",
+        "safety"
+      ],
+      "teaching_behaviors": "工作站布局、工具坐标、轨迹与互锁示意",
+      "model_examples": "KR 系列",
+      "official_reference": "https://www.kuka.com/en-gb/products/robotics-system/software/simulation-planning-optimization/iiqworks-sim-robot-simulation-software",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "robot.gripper",
+      "name": "机器人电动/气动夹爪",
+      "category": "robotics",
+      "vendor": "Generic",
+      "signals": [
+        "DI",
+        "DO",
+        "pneumatic"
+      ],
+      "teaching_behaviors": "夹紧/松开、到位检测、互锁",
+      "model_examples": "两指夹爪教学模型",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "motion.servo_drive",
+      "name": "交流伺服驱动器",
+      "category": "motion",
+      "vendor": "Generic",
+      "signals": [
+        "DI",
+        "DO",
+        "pulse",
+        "analog",
+        "network"
+      ],
+      "teaching_behaviors": "使能、报警复位、原点、正反限位、位置/速度命令（抽象）",
+      "model_examples": "具体型号待指定",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "motion.servo_motor",
+      "name": "伺服电机",
+      "category": "motion",
+      "vendor": "Generic",
+      "signals": [
+        "power",
+        "encoder",
+        "brake"
+      ],
+      "teaching_behaviors": "角度、速度、报警、抱闸逻辑（示意）",
+      "model_examples": "电机+编码器",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "motion.stepper_driver",
+      "name": "步进电机驱动器",
+      "category": "motion",
+      "vendor": "Generic",
+      "signals": [
+        "pulse",
+        "direction",
+        "enable"
+      ],
+      "teaching_behaviors": "脉冲/方向、使能、位置计数、丢步示意",
+      "model_examples": "PUL/DIR/ENA 为常见教学标签，非特定型号引脚定义",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "motion.stepper_motor",
+      "name": "两相步进电机",
+      "category": "motion",
+      "vendor": "Generic",
+      "signals": [
+        "phase_a",
+        "phase_b"
+      ],
+      "teaching_behaviors": "正反转、步距、负载下丢步示意",
+      "model_examples": "两相通用模型",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "motion.encoder",
+      "name": "旋转编码器",
+      "category": "motion",
+      "vendor": "Generic",
+      "signals": [
+        "encoder"
+      ],
+      "teaching_behaviors": "A/B/Z 相概念、计数与方向",
+      "model_examples": "通用增量编码器",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "motor.3phase",
+      "name": "三相异步电机",
+      "category": "motor",
+      "vendor": "Generic",
+      "signals": [
+        "3phase",
+        "mechanical"
+      ],
+      "teaching_behaviors": "点动、自锁、正反转、过载联锁",
+      "model_examples": "教学三相电机",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "motor.singlephase",
+      "name": "单相电机",
+      "category": "motor",
+      "vendor": "Generic",
+      "signals": [
+        "ac",
+        "mechanical"
+      ],
+      "teaching_behaviors": "起动/运行示意",
+      "model_examples": "实际电容接线须确认铭牌",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "motor.vfd",
+      "name": "变频器 VFD",
+      "category": "motor",
+      "vendor": "Generic",
+      "signals": [
+        "3phase",
+        "DI",
+        "DO",
+        "AI",
+        "AO",
+        "network"
+      ],
+      "teaching_behaviors": "启停、频率设定、故障反馈、加减速",
+      "model_examples": "厂商型号待指定",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "low.mcb_1pn",
+      "name": "1P+N 小型断路器",
+      "category": "low_voltage",
+      "vendor": "Generic",
+      "signals": [
+        "L_in",
+        "N_in",
+        "L_out",
+        "N_out"
+      ],
+      "teaching_behaviors": "隔离与保护动作示意",
+      "model_examples": "必须核对厂商 N 极标识和接线方向",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "low.mcb_2p",
+      "name": "2P 小型断路器",
+      "category": "low_voltage",
+      "vendor": "Generic",
+      "signals": [
+        "pole1",
+        "pole2"
+      ],
+      "teaching_behaviors": "双极分断示意",
+      "model_examples": "具体端子以铭牌为准",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "low.rcd",
+      "name": "剩余电流保护装置 RCD/RCBO",
+      "category": "low_voltage",
+      "vendor": "Generic",
+      "signals": [
+        "L",
+        "N",
+        "test"
+      ],
+      "teaching_behaviors": "漏电流检测、跳闸示意",
+      "model_examples": "测试按钮回路不可自行臆造",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "low.contactor",
+      "name": "交流接触器",
+      "category": "low_voltage",
+      "vendor": "Generic",
+      "signals": [
+        "coil",
+        "NO",
+        "NC",
+        "power"
+      ],
+      "teaching_behaviors": "线圈吸合、主触头/辅助触头联动",
+      "model_examples": "通用线圈与接点结构；型号电压待核对",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "low.thermal_relay",
+      "name": "热继电器",
+      "category": "low_voltage",
+      "vendor": "Generic",
+      "signals": [
+        "power",
+        "NO",
+        "NC"
+      ],
+      "teaching_behaviors": "过载延时脱扣、故障复位",
+      "model_examples": "课堂状态机",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "low.relay",
+      "name": "中间继电器",
+      "category": "low_voltage",
+      "vendor": "Generic",
+      "signals": [
+        "coil",
+        "NO",
+        "NC"
+      ],
+      "teaching_behaviors": "线圈驱动与触点转换",
+      "model_examples": "课堂状态机",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "low.timer",
+      "name": "时间继电器",
+      "category": "low_voltage",
+      "vendor": "Generic",
+      "signals": [
+        "coil",
+        "NO",
+        "NC"
+      ],
+      "teaching_behaviors": "通电延时、断电延时示意",
+      "model_examples": "课堂状态机",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "low.pushbutton",
+      "name": "按钮 / 急停按钮",
+      "category": "low_voltage",
+      "vendor": "Generic",
+      "signals": [
+        "NO",
+        "NC",
+        "safety"
+      ],
+      "teaching_behaviors": "常开/常闭、机械自锁示意",
+      "model_examples": "安全回路不得以普通按钮替代安全装置",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "low.terminal",
+      "name": "接线端子排",
+      "category": "low_voltage",
+      "vendor": "Generic",
+      "signals": [
+        "conductor"
+      ],
+      "teaching_behaviors": "导线分配、编号、桥接",
+      "model_examples": "端子数可自定义",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "low.fluorescent",
+      "name": "电感镇流器日光灯实验",
+      "category": "training",
+      "vendor": "Generic",
+      "signals": [
+        "L",
+        "N",
+        "starter",
+        "filament"
+      ],
+      "teaching_behaviors": "自由接线、接线验证、启辉/预热/点亮、故障注入",
+      "model_examples": "单灯传统电感镇流器",
+      "official_reference": "",
+      "implementation_status": "teaching_logic_simulation",
+      "verified_terminal_pinout": false,
+      "notes": "v1 通过教学状态机测试，不是交流瞬态计算。"
+    },
+    {
+      "id": "sensor.inductive",
+      "name": "电感式接近传感器",
+      "category": "sensor",
+      "vendor": "Generic",
+      "signals": [
+        "DI",
+        "power"
+      ],
+      "teaching_behaviors": "检测金属目标、开关量输出",
+      "model_examples": "PNP/NPN 与 2/3/4线型均需按型号核对",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "sensor.photoelectric",
+      "name": "光电开关",
+      "category": "sensor",
+      "vendor": "Generic",
+      "signals": [
+        "DI",
+        "power"
+      ],
+      "teaching_behaviors": "遮挡检测、响应延时示意",
+      "model_examples": "对射/漫反射等工作方式待指定",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "sensor.limit",
+      "name": "行程开关",
+      "category": "sensor",
+      "vendor": "Generic",
+      "signals": [
+        "NO",
+        "NC"
+      ],
+      "teaching_behaviors": "机构触发、限位",
+      "model_examples": "通用模型",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "sensor.pressure",
+      "name": "压力开关/变送器",
+      "category": "sensor",
+      "vendor": "Generic",
+      "signals": [
+        "DI",
+        "AI"
+      ],
+      "teaching_behaviors": "阈值报警、模拟值显示",
+      "model_examples": "气压范围待指定",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "pneu.source",
+      "name": "压缩空气气源 + FRL",
+      "category": "pneumatic",
+      "vendor": "Generic",
+      "signals": [
+        "air"
+      ],
+      "teaching_behaviors": "压力输入、过滤减压、压力指示示意",
+      "model_examples": "教学模型",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "pneu.valve_3_2",
+      "name": "3/2 气动方向阀",
+      "category": "pneumatic",
+      "vendor": "Generic",
+      "signals": [
+        "air",
+        "coil"
+      ],
+      "teaching_behaviors": "阀位切换、气路流向",
+      "model_examples": "具体位型待按图核对",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "pneu.valve_5_2",
+      "name": "5/2 电磁换向阀",
+      "category": "pneumatic",
+      "vendor": "Generic",
+      "signals": [
+        "air",
+        "coil"
+      ],
+      "teaching_behaviors": "线圈驱动阀芯换向、气缸伸缩",
+      "model_examples": "弹簧复位/双电控需区分",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "pneu.valve_5_3",
+      "name": "5/3 换向阀",
+      "category": "pneumatic",
+      "vendor": "Generic",
+      "signals": [
+        "air",
+        "coil"
+      ],
+      "teaching_behaviors": "三位置切换、中位功能选择",
+      "model_examples": "中位机能需指定",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "pneu.cylinder_double",
+      "name": "双作用气缸",
+      "category": "pneumatic",
+      "vendor": "Generic",
+      "signals": [
+        "air",
+        "mechanical"
+      ],
+      "teaching_behaviors": "伸出、缩回、到位信号",
+      "model_examples": "缸径/行程待指定",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "pneu.cylinder_single",
+      "name": "单作用气缸",
+      "category": "pneumatic",
+      "vendor": "Generic",
+      "signals": [
+        "air",
+        "mechanical"
+      ],
+      "teaching_behaviors": "单向动作、弹簧复位",
+      "model_examples": "实际结构需指定",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "pneu.flow",
+      "name": "单向节流阀",
+      "category": "pneumatic",
+      "vendor": "Generic",
+      "signals": [
+        "air"
+      ],
+      "teaching_behaviors": "节流调速示意",
+      "model_examples": "单向自由通流方向需核对符号",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "network.profinet",
+      "name": "PROFINET 工业以太网",
+      "category": "network",
+      "vendor": "Standard",
+      "signals": [
+        "network"
+      ],
+      "teaching_behaviors": "站点、设备名、拓扑、周期性数据交换概念",
+      "model_examples": "不提供真实协议堆栈",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "network.modbus_tcp",
+      "name": "Modbus TCP",
+      "category": "network",
+      "vendor": "Standard",
+      "signals": [
+        "network"
+      ],
+      "teaching_behaviors": "客户端/服务器、寄存器地址映射、通讯状态示意",
+      "model_examples": "不提供真实设备通讯连接",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "network.modbus_rtu",
+      "name": "Modbus RTU",
+      "category": "network",
+      "vendor": "Standard",
+      "signals": [
+        "serial"
+      ],
+      "teaching_behaviors": "站号、串口通信、寄存器映射",
+      "model_examples": "串口参数依具体设备",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    },
+    {
+      "id": "network.ethercat",
+      "name": "EtherCAT",
+      "category": "network",
+      "vendor": "Standard",
+      "signals": [
+        "network"
+      ],
+      "teaching_behaviors": "主从站、周期数据交换示意",
+      "model_examples": "不提供实时总线协议堆栈",
+      "official_reference": "",
+      "implementation_status": "catalog_only",
+      "verified_terminal_pinout": false,
+      "notes": "实际端子、接线电压及固件功能必须按具体型号厂家手册核实；当前不提供设备级仿真。"
+    }
+  ],
+  "disclaimer": "所有设备端子、额定电压、通讯设置、负载特性必须依据所用具体型号正式手册验证；不得以该元件库直接指导现场带电接线。"
+}

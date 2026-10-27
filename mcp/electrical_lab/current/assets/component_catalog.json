@@ -1,0 +1,82 @@
+{
+  "title": "传统单管荧光灯元件库 v1",
+  "components": {
+    "source": {
+      "label": "交流电源（示意）",
+      "terminals": [
+        "L",
+        "N"
+      ],
+      "notes": "教学专用虚拟220V交流电源；绝不可依据仿真直接接市电"
+    },
+    "switch": {
+      "label": "单极控制开关",
+      "terminals": [
+        "1",
+        "2"
+      ],
+      "notes": "断开相线 L，不能替代隔离开关"
+    },
+    "ballast": {
+      "label": "电感镇流器（传统荧光灯）",
+      "terminals": [
+        "1",
+        "2"
+      ],
+      "notes": "限流；启辉器断开时电流突变形成感应高压。非电子镇流器。"
+    },
+    "lamp": {
+      "label": "双灯丝荧光灯管",
+      "terminals": [
+        "A1",
+        "A2",
+        "B1",
+        "B2"
+      ],
+      "notes": "灯管两端各有一组灯丝 A1-A2、B1-B2"
+    },
+    "starter": {
+      "label": "辉光启辉器",
+      "terminals": [
+        "1",
+        "2"
+      ],
+      "notes": "预热期间闭合后断开，正常点亮后保持断开；不是简单延时开关"
+    }
+  },
+  "faults": [
+    "none",
+    "starter_open",
+    "starter_stuck_closed",
+    "ballast_open",
+    "filament_a_open",
+    "filament_b_open",
+    "worn_lamp"
+  ],
+  "reference_wiring": [
+    [
+      "source.L",
+      "switch.1"
+    ],
+    [
+      "switch.2",
+      "ballast.1"
+    ],
+    [
+      "ballast.2",
+      "lamp.A1"
+    ],
+    [
+      "lamp.A2",
+      "starter.1"
+    ],
+    [
+      "starter.2",
+      "lamp.B2"
+    ],
+    [
+      "lamp.B1",
+      "source.N"
+    ]
+  ]
+}

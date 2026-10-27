@@ -1,0 +1,9 @@
+{
+  "name": "industrial-asset-modeling",
+  "description": "处理电工及工业自动化虚拟实训设备素材与非标机台建模，适用于用户照片、尺寸、端子、CAD、SVG、STEP、气路、PLC/HMI、机器人设备的素材来源核查、建档、授权确认、轻量教学示意图生成和后续仿真需求设计。",
+  "relative": "codex-skills/industrial-asset-modeling/SKILL.md",
+  "status": "portable-custom",
+  "reason": "保留专用技能和资源；需要的 MCP/本地软件必须实际可用。",
+  "sha256": "8e9671b4f152bef905712f92d6ce459bb65a8d4d5f7276e6ba6575441edb2e9a",
+  "claude_name": "industrial-asset-modeling"
+}

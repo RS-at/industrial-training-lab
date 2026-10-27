@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "industrial_blender": {
+      "type": "stdio",
+      "command": "uv",
+      "args": ["run", "--directory", "${PLUGIN_ROOT}", "python", "server/main.py"],
+      "cwd": "${PLUGIN_ROOT}"
+    }
+  }
+}

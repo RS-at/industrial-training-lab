@@ -1,0 +1,28 @@
+{
+  "wires": [
+    [
+      "source.L",
+      "switch.1"
+    ],
+    [
+      "switch.2",
+      "ballast.1"
+    ],
+    [
+      "ballast.2",
+      "lamp.A1"
+    ],
+    [
+      "lamp.A2",
+      "starter.1"
+    ],
+    [
+      "starter.2",
+      "lamp.B2"
+    ],
+    [
+      "lamp.B1",
+      "source.N"
+    ]
+  ]
+}

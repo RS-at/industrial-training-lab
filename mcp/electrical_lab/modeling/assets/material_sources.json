@@ -1,0 +1,136 @@
+{
+  "schema_version": "1.0",
+  "notice": "仅列出公开检索入口，不包含第三方版权素材。免费查看/下载不代表可二次发布、用于商用或批量采集。",
+  "sources": [
+    {
+      "id": "3dfindit",
+      "name": "3Dfindit CADENAS",
+      "url": "https://www.3dfindit.com/zh-CN/",
+      "types": [
+        "CAD",
+        "3D",
+        "2D",
+        "机械",
+        "气动",
+        "电机"
+      ],
+      "requires_account": true,
+      "usage_policy": "需按下载条款和具体制造商授权确定使用、修改与再分发许可。",
+      "auto_download": false
+    },
+    {
+      "id": "traceparts",
+      "name": "TraceParts",
+      "url": "https://www.traceparts.com/zh",
+      "types": [
+        "CAD",
+        "3D",
+        "2D",
+        "机械",
+        "电气"
+      ],
+      "requires_account": true,
+      "usage_policy": "平台与原始制造商授权分别核实；不可仅凭免费获取就公开再分发。",
+      "auto_download": false
+    },
+    {
+      "id": "eplan",
+      "name": "EPLAN Data Portal",
+      "url": "https://dataportal.eplan.com/",
+      "types": [
+        "电气",
+        "符号",
+        "端子",
+        "工程数据"
+      ],
+      "requires_account": true,
+      "usage_policy": "授权、账户、宏和设备数据使用范围需根据 EPLAN 条款及制造商许可核实。",
+      "auto_download": false
+    },
+    {
+      "id": "misumi",
+      "name": "米思米 inCAD Library",
+      "url": "https://www.misumi.com.cn/asia/incadlibrary/",
+      "types": [
+        "机械",
+        "非标",
+        "机构",
+        "案例"
+      ],
+      "requires_account": null,
+      "usage_policy": "用作机构设计参考；原始装配模型/图纸不要未经许可打包分发。",
+      "auto_download": false
+    },
+    {
+      "id": "siemens_support",
+      "name": "Siemens Industry Online Support",
+      "url": "https://support.industry.siemens.com/",
+      "types": [
+        "PLC",
+        "HMI",
+        "手册",
+        "端子"
+      ],
+      "requires_account": null,
+      "usage_policy": "以设备具体 MLFB/硬件版本手册为准；保留文献链接和版本，不擅自分发复制件。",
+      "auto_download": false
+    },
+    {
+      "id": "inovance",
+      "name": "汇川技术",
+      "url": "https://www.inovance.com/",
+      "types": [
+        "PLC",
+        "伺服",
+        "变频器",
+        "手册"
+      ],
+      "requires_account": null,
+      "usage_policy": "下载具体型号/硬件版本官方手册并核对端子；资料许可另核查。",
+      "auto_download": false
+    },
+    {
+      "id": "smc",
+      "name": "SMC 官网",
+      "url": "https://www.smcworld.com/",
+      "types": [
+        "气动",
+        "气缸",
+        "电磁阀",
+        "CAD"
+      ],
+      "requires_account": null,
+      "usage_policy": "产品尺寸和阀位取具体型号手册/CAD；重发布权限单独核对。",
+      "auto_download": false
+    },
+    {
+      "id": "festo",
+      "name": "Festo 官网",
+      "url": "https://www.festo.com/",
+      "types": [
+        "气动",
+        "电气",
+        "CAD",
+        "手册"
+      ],
+      "requires_account": null,
+      "usage_policy": "具体产品文档和许可优先，文件不得默认开放分发。",
+      "auto_download": false
+    },
+    {
+      "id": "original_photos",
+      "name": "学校/用户自有照片与测绘",
+      "url": null,
+      "types": [
+        "非标",
+        "照片",
+        "尺寸",
+        "端子",
+        "定制机构"
+      ],
+      "requires_account": false,
+      "usage_policy": "需确认设备所属单位允许拍摄、使用、保存和外发；内部图纸默认私有。",
+      "auto_download": false
+    }
+  ]
+}

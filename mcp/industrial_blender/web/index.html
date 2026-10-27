@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>工业 Blender V3 · GLB 网页性能验收</title>
+<style>
+body{margin:0;background:#10151d;color:#e8edf5;font-family:system-ui,"Microsoft YaHei",sans-serif}
+#viewport{position:fixed;inset:0}#panel{position:absolute;z-index:2;left:16px;top:16px;background:#111924e6;padding:16px 20px;border:1px solid #506174;border-radius:12px;max-width:380px}
+#panel h1{font-size:17px;margin:0 0 10px}#panel small{color:#aab7ca}#metrics{font-variant-numeric:tabular-nums;font-size:14px;white-space:pre-line;line-height:1.8}
+#hint{position:absolute;bottom:12px;left:16px;color:#aab7ca;font-size:12px}
+</style>
+<script type="importmap">
+{"imports":{"three":"/vendor/build/three.module.js","three/addons/":"/vendor/examples/jsm/"}}
+</script>
+</head>
+<body>
+<div id="viewport"></div>
+<div id="panel"><h1>工业 Blender V3 · 性能验收</h1><div id="metrics">正在加载 WebGL 与 GLB ...</div><small>鼠标拖动旋转 / 滚轮缩放。先预热 5 秒，再采样至少 30 秒。GLB 默认从本地 /model.glb 加载。</small></div>
+<div id="hint">检测到 SwiftShader/WARP/软件渲染时，测试结果不得当作 RTX 显卡成绩。</div>
+<script type="module">
+import * as THREE from 'three';
+import {OrbitControls} from 'three/addons/controls/OrbitControls.js';
+import {GLTFLoader} from 'three/addons/loaders/GLTFLoader.js';
+const box=document.getElementById('viewport'),msg=document.getElementById('metrics');
+const renderer=new THREE.WebGLRenderer({antialias:false,powerPreference:'high-performance'});
+renderer.setPixelRatio(Math.min(devicePixelRatio||1,1.5));renderer.setSize(window.innerWidth,window.innerHeight);
+renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;
+box.appendChild(renderer.domElement);
+const gl=renderer.getContext();const dbg=gl.getExtension('WEBGL_debug_renderer_info');
+const webglRenderer=dbg?gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER);
+const scene=new THREE.Scene();scene.background=new THREE.Color('#25313e');
+scene.add(new THREE.HemisphereLight(0xffffff,0x64748b,2));
+const light=new THREE.DirectionalLight(0xffffff,3);light.position.set(4,7,9);scene.add(light);
+const camera=new THREE.PerspectiveCamera(46,window.innerWidth/window.innerHeight,.01,1000);
+const controls=new OrbitControls(camera,renderer.domElement);controls.enableDamping=true;
+const measurements=[];
+window.__v3Metrics={ready:false,error:null,webglRenderer,canvas:[renderer.domElement.width,renderer.domElement.height],dpr:renderer.getPixelRatio(),samples:measurements,model:null,visibility:document.visibilityState};
+const modelUrl=new URLSearchParams(location.search).get('model')||'/model.glb';
+new GLTFLoader().load(modelUrl,gltf=>{
+ const root=gltf.scene;scene.add(root);let bounds=new THREE.Box3().setFromObject(root);
+ if(bounds.isEmpty())throw Error('empty geometry');
+ const size=new THREE.Vector3();bounds.getSize(size);const center=new THREE.Vector3();bounds.getCenter(center);
+ controls.target.copy(center);let radius=Math.max(size.length(),.4);
+ camera.position.copy(center).add(new THREE.Vector3(radius*.8,-radius*1.1,radius*.65));camera.near=Math.max(.001,radius/500);camera.far=Math.max(200,radius*100);camera.updateProjectionMatrix();controls.update();
+ let meshes=0,triangles=0;root.traverse(obj=>{if(obj.isMesh){meshes++; const geo=obj.geometry;const count=geo.index?geo.index.count:geo.attributes.position.count;triangles+=Math.floor(count/3)}});
+ window.__v3Metrics.model={meshes,triangles,src:modelUrl};window.__v3Metrics.ready=true;
+},undefined,e=>{window.__v3Metrics.error=String(e);msg.textContent='模型加载失败：'+e;});
+function resize(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();window.__v3Metrics.canvas=[renderer.domElement.width,renderer.domElement.height]}
+window.addEventListener('resize',resize);
+let last=0;
+function frame(t){requestAnimationFrame(frame);if(document.hidden)return;
+ if(last && t-last < 1000/30-1)return;
+ if(last && window.__v3Metrics.ready){let dt=t-last; if(dt>0 && dt<1000)measurements.push({time:t,ms:dt}); if(measurements.length>1800)measurements.shift();}
+ last=t;controls.update();renderer.render(scene,camera);
+ const ms=measurements.slice(-90).map(x=>x.ms);const recent=ms.length?ms.reduce((a,b)=>a+b,0)/ms.length:0;
+ msg.textContent=`状态：${window.__v3Metrics.ready?'模型已加载':'加载中'}\n当前平均：${recent?(1000/recent).toFixed(1):'--'} FPS\n网格数：${window.__v3Metrics.model?.meshes??'--'}\n三角面：${window.__v3Metrics.model?.triangles??'--'}\n画布：${renderer.domElement.width} × ${renderer.domElement.height}\nWebGL：${webglRenderer}\n样本：${measurements.length}`;
+}
+requestAnimationFrame(frame);
+</script></body></html>

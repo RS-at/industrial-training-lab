@@ -1,0 +1,9 @@
+[project]
+name = "industrial-blender-single-mcp"
+version = "0.4.0"
+description = "One MCP bridging Industrial Blender tools and full original DSH backend API"
+requires-python = ">=3.10"
+dependencies = ["mcp>=1.15,<2"]
+
+[dependency-groups]
+dev = ["pytest>=8"]

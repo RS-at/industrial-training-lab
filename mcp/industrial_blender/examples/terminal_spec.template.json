@@ -1,0 +1,27 @@
+{
+  "schema_version": "v3-terminal-spec-1",
+  "title": "传统电感镇流器荧光灯示例（仅示意端子ID，非厂商尺寸）",
+  "unit": "mm",
+  "max_position_error_mm": 5,
+  "min_terminal_spacing_mm": 2,
+  "components": [
+    {"id": "BALLAST", "expected_terminals": [
+      {"id": "BALLAST_IN", "expected_world_mm": null},
+      {"id": "BALLAST_OUT", "expected_world_mm": null}
+    ]},
+    {"id": "STARTER", "expected_terminals": [
+      {"id": "STARTER_1", "expected_world_mm": null},
+      {"id": "STARTER_2", "expected_world_mm": null}
+    ]},
+    {"id": "LAMP", "expected_terminals": [
+      {"id": "LAMP_L1", "expected_world_mm": null},
+      {"id": "LAMP_L2", "expected_world_mm": null},
+      {"id": "LAMP_R1", "expected_world_mm": null},
+      {"id": "LAMP_R2", "expected_world_mm": null}
+    ]},
+    {"id": "SWITCH", "expected_terminals": [
+      {"id": "SWITCH_IN", "expected_world_mm": null},
+      {"id": "SWITCH_OUT", "expected_world_mm": null}
+    ]}
+  ]
+}

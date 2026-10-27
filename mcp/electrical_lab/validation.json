@@ -1,0 +1,52 @@
+{
+  "server_info": {
+    "protocolVersion": "2025-03-26",
+    "capabilities": {
+      "tools": {
+        "listChanged": false
+      }
+    },
+    "serverInfo": {
+      "name": "electrical-training-lab",
+      "version": "3.0.0"
+    }
+  },
+  "tool_count": 22,
+  "tools_tested": [
+    "list_components",
+    "get_fluorescent_lab",
+    "validate_wiring",
+    "simulate_fluorescent",
+    "list_faults",
+    "list_device_categories",
+    "search_industrial_devices",
+    "get_industrial_device",
+    "scaffold_industrial_lab",
+    "validate_signal_links",
+    "validate_hmi_tags",
+    "list_asset_sources",
+    "new_asset_spec",
+    "validate_asset_spec",
+    "plan_render_pipeline",
+    "generate_generic_svg",
+    "simulate_motion_step",
+    "list_material_sources",
+    "get_asset_intake_checklist",
+    "new_nonstandard_asset",
+    "validate_asset_manifest",
+    "render_nonstandard_svg"
+  ],
+  "roundtrip": "passed",
+  "original_package_tests": [
+    29,
+    30
+  ],
+  "encoding": "UTF-8",
+  "installed_skills": [
+    "electrical-training",
+    "industrial-assets",
+    "industrial-asset-modeling"
+  ],
+  "mcp_name": "electrical_lab",
+  "configuration_verified_enabled": true
+}

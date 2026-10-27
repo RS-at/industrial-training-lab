@@ -1,0 +1,13 @@
+{
+  "name": "industrial-blender-v3-web-audit",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "perf": "node perf.mjs",
+    "postinstall": "node setup-local.mjs"
+  },
+  "devDependencies": {
+    "playwright": "^1.56.0",
+    "three": "^0.181.0"
+  }
+}

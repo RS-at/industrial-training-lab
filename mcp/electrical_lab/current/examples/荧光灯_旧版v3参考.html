@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>荧光灯 · 接线与启辉交互动画 v3</title>
+<style>
+:root{color-scheme:dark;--edge:#243850;--blue:#5ecbff;--cyan:#a3edff;--lime:#8bf5ae}
+*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#07101e;font-family:'Segoe UI','Microsoft Yahei',sans-serif}
+body{display:grid;place-items:center}
+#shell{position:relative;width:min(100vw,calc(100vh * 1.67442));max-height:100vh;aspect-ratio:1440/860;box-shadow:0 30px 90px #0009;overflow:hidden;background:#091322}
+#scene{width:100%;height:100%;display:block;touch-action:none;user-select:none}
+#scene .part{cursor:grab;touch-action:none;filter:drop-shadow(0px 5px 5px #0c162463)}
+#scene .part:active{cursor:grabbing}
+#scene .part.dragging{filter:drop-shadow(0 12px 13px #0107139e)}
+#scene .target{cursor:pointer;transition:opacity .2s ease}
+#scene .target:not(.filled):hover .target-frame{stroke:#55d8fa;stroke-width:2.5;stroke-dasharray:7 5;opacity:.88}
+#scene .target.filled{pointer-events:none;opacity:0}
+#scene .target-frame{stroke:#62bada;opacity:.49;stroke-dasharray:7 8;fill:#81daed08;stroke-width:1.6}
+#scene .part.dragging~.target{opacity:.75}
+#scene .mount-points circle{fill:#f9fbfb;stroke:#8999a7;stroke-width:2}
+#scene .tray-mark{fill:#99b8d1;opacity:.28}
+#scene .board-glow{pointer-events:none}
+#scene .click-area{fill:transparent;pointer-events:all}
+#controls{position:absolute;right:6.3%;top:3.35%;display:flex;gap:9px;align-items:center;z-index:5}
+#controls button{position:relative;display:grid;place-items:center;width:45px;height:45px;padding:0;border:1px solid #6082a36b;border-radius:13px;color:#dceffb;background:#0c1b2cd9;box-shadow:0 7px 15px #050d1773;cursor:pointer;transition:transform .15s,background .15s,box-shadow .18s}
+#controls button svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+#controls button:hover{background:#1b3b50;transform:translateY(-2px)}
+#controls button:focus-visible{outline:2px solid #95e7ff;outline-offset:3px}
+#controls button:active{transform:scale(.94)}
+#controls button.live{color:#e4ffff;border-color:#9ad9ff;background:#124a67;box-shadow:0 0 18px #4edcff46,inset 0 0 10px #43d7ff1a}
+#controls button.live:before{content:"";position:absolute;right:5px;top:5px;width:5px;height:5px;border-radius:50%;background:#82ffa9;box-shadow:0 0 7px #82ffa9}
+@media(max-width:850px){#controls{gap:5px;right:5.5%;top:3.7%}#controls button{width:35px;height:35px;border-radius:10px}#controls button svg{width:18px;height:18px}}
+@media(prefers-reduced-motion:reduce){#controls button{transition:none}}
+
+/* v3: immersive wiring and ignition effects */
+#scene .wire-path{fill:none;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+#scene .wire-outline{stroke:#213243;stroke-width:10;opacity:.88}
+#scene .wire-insulation{stroke-width:6.2;filter:drop-shadow(0 2px 1px #14232c80)}
+#scene .wire-sheen{stroke:#fff;stroke-width:1.6;opacity:.30}
+#scene .wire-current{stroke:#fff6ad;stroke-width:3.1;stroke-dasharray:22 110;stroke-dashoffset:0;opacity:0;animation:current-waves 1.5s linear infinite;filter:drop-shadow(0 0 4px #fff4a2)}
+#scene .wire-current.flowing{opacity:.8}
+#scene .wire-current.pe{display:none}
+@keyframes current-waves{to{stroke-dashoffset:-132}}
+#scene .connection-terminal{fill:#eecb8b;stroke:#345163;stroke-width:2.1;pointer-events:all;cursor:crosshair}
+#scene .connection-ring{fill:none;stroke:#33d5ff;stroke-width:2.2;opacity:.5;pointer-events:none}
+#scene .connection-ring.next{stroke:#fff2a0;opacity:1;animation:terminal-pulse 1.3s ease-in-out infinite}
+#scene .connection-ring.selected{stroke:#8bf5ae;stroke-width:4;opacity:1}
+@keyframes terminal-pulse{50%{opacity:.32;stroke-width:5}}
+#scene .board-interface{cursor:pointer}
+#scene .part.switch-ready{cursor:pointer}
+#controls{right:4.5%;gap:7px}
+#controls button{width:43px;height:43px}
+#controls button.completed{border-color:#79dcad;color:#a5ffde}
+#controls button.busy{border-color:#ffd47f;color:#ffe5a0}
+#controls button.disabled{opacity:.58}
+@media(max-width:850px){#controls{right:3.6%;gap:4px}#controls button{width:33px;height:33px}}
+
+/* v3 controls: scenario modes, inspection, pause, speed and timeline */
+#hud{position:absolute;left:4.3%;top:3.5%;z-index:6;display:flex;align-items:center;gap:8px;pointer-events:none}
+#hud button{pointer-events:auto;display:grid;place-items:center;border:1px solid #6a9dc078;background:#0a2338df;color:#d8f8ff;width:39px;height:39px;border-radius:11px;box-shadow:0 5px 16px #06101b9c;cursor:pointer;font:700 15px 'Segoe UI',sans-serif}
+#hud button svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#hud button:hover,#hud button[aria-pressed=true]{background:#155170;color:white;border-color:#93defd}
+#hud button[data-mode=aging]{color:#ffc77e;border-color:#e4ad6f99}
+#hud button[data-mode=fault]{color:#ff9b91;border-color:#ef858599}
+#hud #speed{font-size:13px;width:45px}
+#timeline{position:absolute;z-index:6;left:25%;right:25%;bottom:1.25%;height:11px;border-radius:9px;border:1px solid #588fb470;background:#102236eb;cursor:pointer;display:none;overflow:visible;touch-action:none}
+#timeline::before{content:'';position:absolute;inset:3px;border-radius:3px;background:linear-gradient(90deg,#f7a663 0 23%,#76c8f3 23% 49%,#f7a663 49% 75%,#a1f5de 75% 100%);opacity:.43;pointer-events:none}
+#timelineProgress{position:absolute;height:3px;top:3px;left:3px;width:0;background:#dcfaff;box-shadow:0 0 9px #9befff;border-radius:3px;pointer-events:none}
+#timelineThumb{position:absolute;top:-4px;left:0;transform:translateX(-50%);width:17px;height:17px;background:#ebffff;border:3px solid #539ed5;border-radius:50%;box-shadow:0 0 14px #8be4ffa3;pointer-events:none}
+#timeline.visible{display:block}
+#pulseRing{pointer-events:none;opacity:0}
+#starterDetail{display:none;pointer-events:none}
+#starterDetail.visible{display:block}
+#starterDetail .glass-bulb{fill:#22385055;stroke:#cbecf5;stroke-width:3}
+#starterDetail .contact-wire{fill:none;stroke:#d8d7cb;stroke-width:6;stroke-linecap:round}
+#starterDetail .contact-head{fill:#e9e4d0;stroke:#8cabb5;stroke-width:2}
+#starterDetail .close-spark{opacity:0}
+#starterDetail .arc-field{opacity:0}
+@media(max-width:850px){#hud{left:3.7%;gap:4px;top:3.8%}#hud button{width:31px;height:31px;border-radius:9px}#hud button svg{width:17px;height:17px}#hud #speed{font-size:11px;width:37px}#timeline{bottom:1%;height:8px}}
+</style>
+</head>
+<body>
+<div id="shell">
+<svg id="scene" viewBox="0 0 1440 860" xmlns="http://www.w3.org/2000/svg" aria-label="可拖拽的荧光灯安装布局和交互式闪烁动画">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#15243a"/><stop offset=".56" stop-color="#081526"/><stop offset="1" stop-color="#12253a"/></linearGradient>
+ <linearGradient id="steel" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#e3eced"/><stop offset=".46" stop-color="#d5e0e1"/><stop offset="1" stop-color="#b3c4cc"/></linearGradient>
+ <linearGradient id="boardmetal" x1="0" x2="1" y1="0" y2="1"><stop stop-color="#f1f4f3"/><stop offset=".6" stop-color="#e1e8e7"/><stop offset="1" stop-color="#b6c5ca"/></linearGradient>
+ <linearGradient id="glass" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#f9fcfc"/><stop offset=".12" stop-color="#e5eeee"/><stop offset=".52" stop-color="#a4b6bf"/><stop offset=".74" stop-color="#f7fbfc"/><stop offset="1" stop-color="#9fabb2"/></linearGradient>
+ <linearGradient id="lampOn" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#f0ffff"/><stop offset=".16" stop-color="#fff"/><stop offset=".5" stop-color="#fbffff"/><stop offset=".84" stop-color="#e4ffff"/><stop offset="1" stop-color="#a2cde3"/></linearGradient>
+ <linearGradient id="ballastCase" x1="0" x2="1"><stop stop-color="#e1e6e6"/><stop offset=".2" stop-color="#f7fbf9"/><stop offset=".8" stop-color="#c7d3d8"/><stop offset="1" stop-color="#a8b6bf"/></linearGradient>
+ <linearGradient id="starterCase" x1="0" x2="1"><stop stop-color="#bcc6c8"/><stop offset=".18" stop-color="#faffff"/><stop offset=".68" stop-color="#f1f8f8"/><stop offset="1" stop-color="#afbfc2"/></linearGradient>
+ <radialGradient id="wallLight"><stop stop-color="#e4ffff" stop-opacity=".96"/><stop offset=".28" stop-color="#b3efff" stop-opacity=".6"/><stop offset=".64" stop-color="#96e7ff" stop-opacity=".17"/><stop offset="1" stop-color="#b3efff" stop-opacity="0"/></radialGradient>
+ <radialGradient id="starterGlow"><stop stop-color="#fff9b3"/><stop offset=".25" stop-color="#ff9c35" stop-opacity=".9"/><stop offset="1" stop-color="#ff8b27" stop-opacity="0"/></radialGradient>
+ <radialGradient id="filamentGlow"><stop stop-color="#fff5b4"/><stop offset=".2" stop-color="#ff954a" stop-opacity=".95"/><stop offset="1" stop-color="#ff5719" stop-opacity="0"/></radialGradient>
+ <pattern id="holes" width="22" height="22" patternUnits="userSpaceOnUse"><circle cx="11" cy="11" r="4.2" fill="#5f7c85" opacity=".26"/><circle cx="10.2" cy="10.2" r="2.75" fill="#465d66" opacity=".52"/><circle cx="12.8" cy="13" r="1.6" fill="#fff" opacity=".45"/></pattern>
+ <pattern id="fine" width="13" height="13" patternUnits="userSpaceOnUse"><path d="M0 13L13 0" stroke="#fff" stroke-width=".5" opacity=".045"/></pattern>
+ <filter id="drop" x="-30%" y="-40%" width="160%" height="190%"><feGaussianBlur in="SourceAlpha" stdDeviation="7"/><feOffset dy="7"/><feComponentTransfer><feFuncA type="linear" slope=".3"/></feComponentTransfer><feMerge><feMergeNode/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+ <filter id="soft-glow" x="-80%" y="-220%" width="260%" height="540%"><feGaussianBlur stdDeviation="24"/></filter>
+ <filter id="medium-glow" x="-40%" y="-120%" width="180%" height="340%"><feGaussianBlur stdDeviation="10"/></filter>
+ <filter id="spot-glow" x="-150%" y="-150%" width="400%" height="400%"><feGaussianBlur stdDeviation="9"/></filter>
+ <filter id="fast-shadow" x="-50%" y="-50%" width="200%" height="250%"><feGaussianBlur stdDeviation="4"/></filter>
+</defs>
+<rect width="1440" height="860" fill="url(#bg)"/>
+<ellipse cx="724" cy="348" rx="715" ry="360" fill="#71b6db" opacity=".045"/>
+<path d="M0 0 H1440" stroke="#5da2c0" stroke-width="2" opacity=".15"/>
+<!-- board and frame -->
+<rect x="74" y="73" width="1292" height="630" rx="23" fill="#041020" opacity=".65" filter="url(#drop)"/>
+<rect x="86" y="72" width="1268" height="610" rx="22" fill="#435665" stroke="#85a8b1" stroke-width="3"/>
+<rect x="95" y="80" width="1250" height="595" rx="16" fill="url(#steel)" stroke="#d9eded" stroke-width="2"/>
+<rect x="110" y="100" width="1220" height="553" rx="10" fill="url(#boardmetal)" stroke="#7d929b" stroke-width="2"/>
+<rect x="110" y="100" width="1220" height="553" rx="10" fill="url(#holes)"/>
+<rect x="110" y="100" width="1220" height="553" rx="10" fill="url(#fine)"/>
+<path d="M114 102 H1324" stroke="#fff" stroke-width="2" opacity=".5"/>
+<g fill="#7b94a0" stroke="#4e6976" stroke-width="2"><circle cx="115" cy="102" r="6"/><circle cx="1324" cy="102" r="6"/><circle cx="115" cy="652" r="6"/><circle cx="1324" cy="652" r="6"/></g>
+<g stroke="#c4dee1" stroke-width="2"><path d="M111 102h8 M115 98v8 M1320 102h8 M1324 98v8 M111 652h8 M115 648v8 M1320 652h8 M1324 648v8"/></g>
+<!-- ambient light on board -->
+<ellipse id="ambientLight" class="board-glow" cx="722" cy="257" rx="626" ry="315" fill="url(#wallLight)" opacity="0"/>
+
+<!-- isolated teaching supply and grounded mounting-board point -->
+<g id="supply" pointer-events="none">
+ <rect x="126" y="582" width="158" height="67" rx="10" fill="#cfdde0" stroke="#78909d" stroke-width="2.5" filter="url(#drop)"/>
+ <rect x="136" y="591" width="138" height="49" rx="7" fill="#748e9b" opacity=".24"/>
+ <rect x="144" y="601" width="24" height="37" rx="5" fill="#a44842" stroke="#753f3f" stroke-width="2"/>
+ <rect x="194" y="601" width="24" height="37" rx="5" fill="#487ca9" stroke="#335d85" stroke-width="2"/>
+ <rect x="244" y="601" width="24" height="37" rx="5" fill="#77a46b" stroke="#476d4c" stroke-width="2"/>
+ <g font-family="Arial" text-anchor="middle" font-weight="700" font-size="14" fill="#172a32"><text x="156" y="598">L</text><text x="206" y="598">N</text><text x="256" y="598">PE</text></g>
+ <circle cx="1316" cy="628" r="9" fill="#cfdbd4" stroke="#566f7b" stroke-width="2.4"/><circle cx="1316" cy="628" r="4" fill="#798e94"/>
+</g>
+<!-- target footprints: direct-click targets too -->
+<g id="targets">
+  <g class="target" data-id="tube"><rect class="target-frame" x="216" y="209" width="1008" height="77" rx="39"/></g>
+  <g class="target" data-id="holderL"><rect class="target-frame" x="175" y="185" width="94" height="144" rx="13"/></g>
+  <g class="target" data-id="holderR"><rect class="target-frame" x="1173" y="185" width="94" height="144" rx="13"/></g>
+  <g class="target" data-id="ballast"><rect class="target-frame" x="268" y="438" width="300" height="134" rx="12"/></g>
+  <g class="target" data-id="starter"><rect class="target-frame" x="810" y="422" width="105" height="173" rx="19"/></g>
+  <g class="target" data-id="switch"><rect class="target-frame" x="1052" y="434" width="132" height="146" rx="15"/></g>
+</g>
+<!-- schematic-only mounting pads: not a wiring instruction -->
+<g id="target-decor" pointer-events="none" opacity=".24" stroke="#4d97af" stroke-width="1.5">
+<path d="M291 453v-21h-21 M545 453v-21h21 M824 439v-21h-21 M901 439v-21h21 M1073 455v-21h-21 M1163 455v-21h21" fill="none"/>
+</g>
+<g id="wires" pointer-events="none"></g>
+<!-- tray -->
+<path d="M70 715 H1370" stroke="#8cbed7" stroke-opacity=".28" stroke-width="2"/>
+<rect x="74" y="726" width="1292" height="102" rx="17" fill="#081527" stroke="#2d4a63" stroke-width="2"/>
+<rect x="85" y="737" width="1270" height="80" rx="12" fill="#1a2b41" opacity=".4"/>
+<path d="M101 778 H1340" stroke="#a2cce5" stroke-opacity=".09" stroke-dasharray="7 15" stroke-width="1.5"/>
+<g fill="none" stroke="#8ab5ce" stroke-opacity=".14" stroke-width="2">
+<rect x="263" y="741" width="434" height="71" rx="19"/><rect x="694" y="741" width="89" height="71" rx="12"/><rect x="786" y="741" width="86" height="71" rx="12"/><rect x="877" y="741" width="168" height="71" rx="12"/><rect x="1050" y="741" width="95" height="71" rx="12"/><rect x="1151" y="741" width="118" height="71" rx="12"/>
+</g>
+<!-- parts are generated in JS so dragging remains crisp -->
+<g id="parts"></g>
+<!-- terminals placed above parts, small editable connection points -->
+<g id="terminals"></g>
+<!-- tray visual glint -->
+<path d="M88 727 H1351" stroke="#adcbe3" stroke-opacity=".17"/>
+<!-- progress dots, purely graphical -->
+<g id="dots" transform="translate(634 39)"></g>
+<!-- non-verbal starter cutaway: opened with magnifier icon -->
+<g id="starterDetail" transform="translate(480 350)">
+ <rect width="460" height="284" rx="23" fill="#061423" stroke="#83b1c8" stroke-width="2.5" opacity=".97"/>
+ <rect x="11" y="11" width="438" height="262" rx="17" fill="#0e2941" opacity=".65"/>
+ <ellipse cx="230" cy="144" rx="74" ry="109" class="glass-bulb"/>
+ <ellipse cx="230" cy="146" rx="69" ry="98" fill="#b4e6ff" opacity=".055"/>
+ <path class="contact-wire" d="M208 238V153"/>
+ <circle class="contact-head" cx="208" cy="151" r="6"/>
+ <path id="starterLeaf" class="contact-wire" d="M249 238 L249 198 Q249 168 254 159"/>
+ <circle id="starterLeafTip" class="contact-head" cx="254" cy="159" r="6"/>
+ <g class="close-spark"><circle cx="228" cy="155" r="28" fill="url(#starterGlow)"/><path d="M217 148l10 10 8-13" stroke="#ffe8ad" stroke-width="4" fill="none"/></g>
+ <g class="arc-field"><ellipse cx="232" cy="148" rx="69" ry="76" fill="url(#starterGlow)" opacity=".4"/><path d="M209 152q14-24 29 0t18 0" fill="none" stroke="#ffe2a7" stroke-width="3"/></g>
+ <g fill="none" stroke="#4c829a" stroke-width="2"><path d="M70 143h62m196 0h60"/><circle cx="70" cy="143" r="5" fill="#76b9d3"/><circle cx="388" cy="143" r="5" fill="#76b9d3"/></g>
+ <path d="M118 221h68 M279 221h71" stroke="#6bb9d0" stroke-width="2" stroke-dasharray="5 9"/>
+</g>
+</svg>
+<div id="controls" aria-label="动画控制">
+ <button id="auto" title="自动安装器件" aria-label="自动安装器件"><svg viewBox="0 0 24 24"><rect x="2.5" y="3" width="8" height="7" rx="1"/><rect x="13.5" y="3" width="8" height="7" rx="1"/><rect x="2.5" y="14" width="8" height="7" rx="1"/><path d="M16.5 14v7m-3.5-3.5h7"/></svg></button>
+ <button id="wire" title="逐根接线（也可依次点亮两端接线端子）" aria-label="连接下一根导线"><svg viewBox="0 0 24 24"><circle cx="4" cy="6" r="2"/><circle cx="20" cy="18" r="2"/><path d="M6 6h5v12h7"/></svg></button>
+ <button id="wireall" title="自动完成全部接线" aria-label="自动接线"><svg viewBox="0 0 24 24"><circle cx="3" cy="6" r="2"/><circle cx="21" cy="18" r="2"/><path d="M5 6h6v12h8 M14 4l4 4-4 4 M13 8h5"/></svg></button>
+ <button id="power" title="通电 / 断电（仅模拟；自动完成未接好的布局和接线）" aria-label="模拟通电与断电"><svg viewBox="0 0 24 24"><path d="M12 2v9"/><path d="M7 5a9 9 0 1 0 10 0"/></svg></button>
+ <button id="replay" title="重新观看辉光、预热、闪烁、点亮" aria-label="重播启动动画"><svg viewBox="0 0 24 24"><path d="M20 7v5h-5"/><path d="M20 12A8 8 0 1 0 20.4 16"/><path d="M12 8v4l3 2"/></svg></button>
+ <button id="reset" title="清空接线并重新布置器件" aria-label="全部重置"><svg viewBox="0 0 24 24"><path d="M4 7h16 M9 7V4h6v3 M7 7l1 14h8l1-14"/><path d="M10 11v6 M14 11v6"/></svg></button>
+</div>
+<div id="hud">
+ <button id="mode" data-mode="normal" title="启动模式：正常（点击切换老化、无法启动）" aria-label="切换启动模式"><svg viewBox="0 0 24 24"><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="4"/></svg></button>
+ <button id="inspect" title="放大观察启辉器内部触点" aria-label="启辉器内部结构放大镜" aria-pressed="false"><svg viewBox="0 0 24 24"><circle cx="10" cy="10" r="6"/><path d="M14.5 14.5L21 21M7 10h6M10 7v6"/></svg></button>
+ <button id="pause" title="暂停 / 继续动画" aria-label="暂停或继续" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg></button>
+ <button id="speed" title="播放速度（点击切换）" aria-label="切换播放速度">1×</button>
+</div>
+<div id="timeline" role="slider" tabindex="0" aria-label="启动动画进度，可拖动回放" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="timelineProgress"></div><div id="timelineThumb"></div></div>
+</div>
+<script>
+(()=>{'use strict';
+const svg=document.querySelector('#scene'), layer=document.querySelector('#parts'), ambient=document.querySelector('#ambientLight');
+const buttonAuto=document.querySelector('#auto'),buttonPower=document.querySelector('#power'),buttonReplay=document.querySelector('#replay'),buttonReset=document.querySelector('#reset');
+const cfg={
+ tube:   {target:[720,247],home:[480,775],scale:1,homeScale:.425},
+ holderL:{target:[222,256],home:[741,774],scale:1,homeScale:.69},
+ holderR:{target:[1220,256],home:[829,774],scale:1,homeScale:.69},
+ ballast:{target:[418,505],home:[960,776],scale:1,homeScale:.52},
+ starter:{target:[862,503],home:[1097,774],scale:1,homeScale:.59},
+ switch: {target:[1118,507],home:[1214,774],scale:1,homeScale:.59}
+};
+// Cosmetic SVG renders. The training board is a placement simulation, not an electrical wiring plan.
+const lamp=()=>`<g class="light-layers" pointer-events="none">
+   <rect x="-505" y="-46" width="1010" height="94" rx="48" fill="#b7efff" filter="url(#soft-glow)" class="lamp-outer" opacity="0"/>
+   <rect x="-495" y="-30" width="990" height="60" rx="30" fill="#e1ffff" filter="url(#medium-glow)" class="lamp-inner" opacity="0"/>
+ </g>
+ <g class="ignition-effects" pointer-events="none">
+  <rect class="pulse-field" x="-473" y="-24" width="946" height="48" rx="24" fill="#b9d9ff" filter="url(#medium-glow)" opacity="0"/>
+  <path class="plasma-path" d="M-440 0 C-350 -20,-260 18,-170 0 S 40 15,130 0 S 350 12,440 0" fill="none" stroke="#d2b6ff" stroke-width="6" filter="url(#medium-glow)" opacity="0"/>
+  <rect class="wave-front" x="-450" y="-22" width="90" height="44" rx="22" fill="#f1faff" filter="url(#soft-glow)" opacity="0"/>
+ </g>
+ <g class="main-lamp">
+  <rect x="-487" y="-25" width="974" height="50" rx="24" fill="#435663" opacity=".25"/>
+  <rect x="-476" y="-24" width="952" height="48" rx="23" fill="url(#glass)" stroke="#899fa8" stroke-width="1.8"/>
+  <rect x="-469" y="-20" width="938" height="40" rx="20" fill="url(#lampOn)" class="lamp-core" opacity="0"/>
+  <rect x="-465" y="-17" width="930" height="34" rx="17" fill="#bbddff" class="lamp-coldglow" opacity="0"/>
+  <path d="M-459 -17 H459" stroke="#fff" stroke-width="3" opacity=".3" stroke-linecap="round"/>
+  <path d="M-459 19 H459" stroke="#758f9e" stroke-width="2" opacity=".38" stroke-linecap="round"/>
+  <rect x="-493" y="-26" width="24" height="52" rx="5" fill="#87959c" stroke="#73818a" stroke-width="1.5"/>
+  <rect x="469" y="-26" width="24" height="52" rx="5" fill="#87959c" stroke="#73818a" stroke-width="1.5"/>
+  <path d="M-489 -20 V20 M489 -20V20" stroke="#e4ebee" stroke-width="2" opacity=".7"/>
+  <path d="M-496 -11 h-10 M-496 11h-10 M496 -11h10 M496 11h10" stroke="#d0aa68" stroke-width="4" stroke-linecap="round"/>
+  <ellipse class="filament-bloom" cx="-446" cy="0" rx="40" ry="39" fill="url(#filamentGlow)" opacity="0"/>
+  <ellipse class="filament-bloom" cx="446" cy="0" rx="40" ry="39" fill="url(#filamentGlow)" opacity="0"/>
+  <path class="filament-line" d="M-457 -8q10 16 20 0m-20 8q10 16 20 0M437 -8q10 16 20 0m-20 8q10 16 20 0" stroke="#ff8a3e" stroke-width="3" opacity="0" fill="none"/>
+  <g class="flicker-stripes" opacity="0" fill="#fff"><rect x="-449" y="-17" width="133" height="35" rx="17" opacity=".22"/><rect x="-206" y="-17" width="111" height="35" rx="17" opacity=".15"/><rect x="128" y="-17" width="97" height="35" rx="17" opacity=".21"/></g>
+ </g>`;
+const holder=()=>`<rect x="-42" y="-72" width="84" height="144" rx="13" fill="#fcffff" stroke="#9eabb2" stroke-width="2.5"/>
+ <rect x="-34" y="-64" width="68" height="128" rx="10" fill="#e5eeed"/>
+ <rect x="-28" y="-26" width="56" height="53" rx="12" fill="#35454b" stroke="#637a82" stroke-width="3"/>
+ <path d="M0 -25V26" stroke="#9aabaf" stroke-width="8"/><path d="M-10 -15L-8 8M10 -15L8 8" stroke="#a8b6b8" stroke-width="4"/>
+ <circle cx="0" cy="-52" r="5" fill="#8f9c9d" stroke="#d6e0e1" stroke-width="2"/>
+ <circle cx="0" cy="52" r="5" fill="#8f9c9d" stroke="#d6e0e1" stroke-width="2"/>
+ <rect x="-27" y="-58" width="13" height="12" rx="3" fill="#d7dede" opacity=".7"/>`;
+const ballast=()=>`<g filter="url(#drop)"><rect x="-150" y="-61" width="300" height="122" rx="10" fill="#a2b2bb" stroke="#708694" stroke-width="2"/>
+ <rect x="-140" y="-56" width="280" height="112" rx="9" fill="url(#ballastCase)" stroke="#b9c8cf" stroke-width="1.4"/>
+ <rect x="-163" y="-25" width="18" height="50" rx="4" fill="#8a9fa8"/><rect x="145" y="-25" width="18" height="50" rx="4" fill="#8a9fa8"/>
+ <circle cx="-154" cy="0" r="5" fill="#52616b" stroke="#c0c9ce" stroke-width="2"/><circle cx="154" cy="0" r="5" fill="#52616b" stroke="#c0c9ce" stroke-width="2"/>
+ <rect x="-120" y="-39" width="232" height="77" rx="6" fill="#e5ebeb" stroke="#b6c0c3"/>
+ <path d="M-110 -20H100M-110 -12H55M-110 -4H80" stroke="#b5c3c8" stroke-width="3" opacity=".82"/>
+ <path d="M-108 14h38l7 -10 11 20 12 -20 10 20 10 -20 12 10h40" stroke="#6f899a" stroke-width="2.2" fill="none"/>
+ <rect x="-112" y="28" width="215" height="5" rx="2" fill="#ccd4d4"/>
+ <path d="M-140 -51h280" stroke="#fff" stroke-opacity=".73" stroke-width="3"/>
+ <rect class="ballast-pulse" x="-150" y="-61" width="300" height="122" rx="11" fill="none" stroke="#fce9ab" stroke-width="5" filter="url(#medium-glow)" opacity="0"/>
+ </g>`;
+const starter=()=>`<g filter="url(#drop)">
+ <rect x="-52" y="38" width="104" height="39" rx="10" fill="#d7e4e1" stroke="#94a7ae" stroke-width="2"/>
+ <circle cx="-37" cy="57" r="5" fill="#8ca2aa"/><circle cx="37" cy="57" r="5" fill="#8ca2aa"/>
+ <rect x="-37" y="-73" width="74" height="126" rx="21" fill="url(#starterCase)" stroke="#94a6a8" stroke-width="2.2"/>
+ <rect x="-33" y="-71" width="66" height="25" rx="12" fill="#dde7e9"/>
+ <path d="M-30 -48H30" stroke="#95a8b1" stroke-width="2"/>
+ <rect x="-34" y="4" width="68" height="20" fill="#59858a" opacity=".88"/>
+ <path d="M-27 35h54" stroke="#8d9da1" stroke-width="2"/>
+ <circle cx="0" cy="-27" r="9" fill="#7e969c" opacity=".5"/>
+ <circle class="starter-bloom" cx="0" cy="-25" r="48" fill="url(#starterGlow)" opacity="0" filter="url(#spot-glow)"/>
+ <circle class="starter-spark" cx="0" cy="-25" r="8" fill="#ffb55e" opacity="0"/>
+ </g>`;
+const sw=()=>`<g filter="url(#drop)">
+ <rect x="-66" y="-73" width="132" height="146" rx="15" fill="#d8e1e2" stroke="#8a9faa" stroke-width="2.5"/>
+ <rect x="-53" y="-61" width="106" height="122" rx="11" fill="#f0f6f4" stroke="#b4c5c9" stroke-width="2"/>
+ <rect x="-29" y="-36" width="58" height="76" rx="7" fill="#c1cdd0" stroke="#9aabb3" stroke-width="2"/>
+ <path id="rocker" d="M-24 -30H24V12H-24Z" fill="#fafcfc" stroke="#9facb0" stroke-width="1.4"/>
+ <rect x="-12" y="-8" width="24" height="3.5" rx="2" fill="#acbcc0"/>
+ <circle cx="0" cy="53" r="4" fill="#99a5a9"/>
+ <circle class="switch-led" cx="0" cy="27" r="5.5" fill="#37df9e" opacity=".15"/>
+ <circle cx="-43" cy="-49" r="4" fill="#9caab0"/><circle cx="43" cy="49" r="4" fill="#9caab0"/>
+ </g>`;
+const shapes={tube:lamp(),holderL:holder(),holderR:holder(),ballast:ballast(),starter:starter(),switch:sw()};
+const order=['tube','holderL','holderR','ballast','starter','switch'];
+const parts={};
+const svgNS='http://www.w3.org/2000/svg';
+const wiresLayer=document.querySelector('#wires'),terminalLayer=document.querySelector('#terminals');
+const buttonWire=document.querySelector('#wire'),buttonWireAll=document.querySelector('#wireall');
+for(const id of order){
+  const p=cfg[id],g=document.createElementNS(svgNS,'g');
+  g.classList.add('part');g.dataset.id=id;g.innerHTML=shapes[id];layer.appendChild(g);
+  parts[id]={id,el:g,x:p.home[0],y:p.home[1],scale:p.homeScale,placed:false,animating:false};place(parts[id]);
+}
+const WIRES=[
+  {id:'L-SW',nodes:['sL','sIn'], color:'#df6659', d:'M156 623 L156 639 L1194 639 L1194 601 L1118 601 L1118 580'},
+  {id:'SW-BALLAST',nodes:['sOut','blIn'],color:'#d38b53',d:'M1052 492 L1027 492 L1027 408 L612 408 L612 543 L568 543'},
+  {id:'BALLAST-A1',nodes:['blOut','A1'],color:'#d38b53',d:'M568 493 L591 493 L591 345 L189 345 L189 329'},
+  {id:'A2-START',nodes:['A2','st1'],color:'#aa83c9',d:'M255 329 L255 379 L783 379 L783 589 L828 589'},
+  {id:'START-B2',nodes:['st2','B2'],color:'#aa83c9',d:'M897 589 L959 589 L959 366 L1188 366 L1188 329'},
+  {id:'B1-N',nodes:['B1','sN'],color:'#569fcb',d:'M1253 329 L1292 329 L1292 612 L206 612 L206 623'},
+  {id:'PE-FRAME',nodes:['sPE','frame'],color:'#72b87c',d:'M256 623 L256 648 L1316 648 L1316 628',ground:true},
+];
+const NODES={sL:[156,623],sN:[206,623],sPE:[256,623],frame:[1316,628],
+  sIn:[1118,580],sOut:[1052,492],blIn:[568,543],blOut:[568,493],
+  A1:[189,329],A2:[255,329],B1:[1253,329],B2:[1188,329],st1:[828,589],st2:[897,589]};
+let buildVersion=0, wireVersion=0,igniteVersion=0,lit=false,igniteRaf=0,buildBusy=false,wireBusy=false;
+let buildPromise=null,wirePromise=null,drag=null,connected=0,selectedTerminal=null;
+let ignitionMode='normal',playbackSpeed=1,paused=false,progress=0,sequenceClock=0,lastTick=0;
+const modeButton=document.querySelector('#mode'), inspectButton=document.querySelector('#inspect'),pauseButton=document.querySelector('#pause'),speedButton=document.querySelector('#speed');
+const detailPanel=document.querySelector('#starterDetail'), timeline=document.querySelector('#timeline'), timelineProgress=document.querySelector('#timelineProgress'),timelineThumb=document.querySelector('#timelineThumb');
+const modeOrder=['normal','aging','fault'];
+const modeNames={normal:'正常启动（预热后点亮）',aging:'老化灯管（反复闪烁后点亮）',fault:'无法启动（持续尝试后停止）'};
+let detailOpen=false;
+
+const wireObjects=[];
+function place(p){p.el.setAttribute('transform',`translate(${p.x.toFixed(2)} ${p.y.toFixed(2)}) scale(${p.scale.toFixed(3)})`)}
+function targetMark(id,placed){document.querySelector(`.target[data-id="${id}"]`).classList.toggle('filled',placed)}
+function allPlaced(){return order.every(id=>parts[id].placed)}
+function allWired(){return connected===WIRES.length}
+function updateDots(){
+ const dots=document.querySelector('#dots');
+ dots.setAttribute('transform','translate(584 39)');
+ dots.innerHTML=[...order.map(id=>parts[id].placed),...WIRES.map((_,i)=>i<connected)].map((yes,i)=>
+ `<circle cx="${i*19}" cy="0" r="3.3" fill="${yes?'#8bebcf':'#496a82'}" opacity="${yes?1:.45}"/>`).join('');
+ buttonAuto.classList.toggle('completed',allPlaced());
+ buttonWireAll.classList.toggle('completed',allWired());
+ buttonWire.classList.toggle('completed',allWired());
+}
+function setGlow(lum=0,fil=0,st=0,pulse=0,closed=0,phase='off',t=0){
+  const tube=parts.tube.el,star=parts.starter.el;
+  lum=Math.min(1,Math.max(0,lum));fil=Math.min(1,Math.max(0,fil));st=Math.min(1,Math.max(0,st));pulse=Math.min(1,Math.max(0,pulse));
+  tube.querySelector('.lamp-core').setAttribute('opacity',String(.99*lum));
+  tube.querySelector('.lamp-coldglow').setAttribute('opacity',String(pulse*.60));
+  tube.querySelector('.lamp-outer').setAttribute('opacity',String(.92*lum+.60*pulse));
+  tube.querySelector('.lamp-inner').setAttribute('opacity',String(.95*lum+.68*pulse));
+  tube.querySelector('.pulse-field').setAttribute('opacity',String(.72*pulse));
+  tube.querySelector('.plasma-path').setAttribute('opacity',String(.96*pulse));
+  const wf=tube.querySelector('.wave-front');wf.setAttribute('opacity',String(.85*pulse));wf.setAttribute('transform',`translate(${Math.max(0,(t%1)*9)*95} 0)`);
+  tube.querySelector('.flicker-stripes').setAttribute('opacity',String(pulse>.08||lum>.08&&lum<.90?.65:0));
+  tube.querySelectorAll('.filament-bloom').forEach(e=>e.setAttribute('opacity',String(fil*.99)));
+  tube.querySelector('.filament-line').setAttribute('opacity',String(fil));
+  star.querySelector('.starter-bloom').setAttribute('opacity',String(st));
+  star.querySelector('.starter-spark').setAttribute('opacity',String(st*.98));
+  parts.ballast.el.querySelector('.ballast-pulse').setAttribute('opacity',String(pulse*.9));
+  ambient.setAttribute('opacity',String(lum*.80+pulse*.20));
+  parts.switch.el.querySelector('.switch-led').setAttribute('opacity',String(lit?.98:.15));
+  parts.switch.el.querySelector('#rocker').setAttribute('transform',lit?'translate(0 -5)':'translate(0 6)');
+  buttonPower.classList.toggle('live',lit);
+  detailPanel.querySelector('.arc-field').setAttribute('opacity',String(st*.85));
+  detailPanel.querySelector('.close-spark').setAttribute('opacity',String(pulse*.7+(closed>.5?.24:0)));
+  // A bimetal contact bends toward the fixed contact only during filament preheating.
+  const tipX=closed>.5?214:254;
+  detailPanel.querySelector('#starterLeaf').setAttribute('d',`M249 238 L249 198 Q249 168 ${tipX} 159`);
+  detailPanel.querySelector('#starterLeafTip').setAttribute('cx',String(tipX));
+}
+function setFlow(phase='off'){
+ wireObjects.forEach((g,i)=>{
+  const curr=g.querySelector('.wire-current');
+  if(curr)curr.classList.toggle('flowing',phase==='preheat'?i<6:phase==='strike'||phase==='stable'?[0,1,2,5].includes(i):false);
+ });
+}
+function off(){igniteVersion++;cancelAnimationFrame(igniteRaf);lit=false;paused=false;progress=0;sequenceClock=0;lastTick=0;
+ timeline.classList.remove('visible');pauseButton.setAttribute('aria-pressed','false');
+ pauseButton.innerHTML='<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>';
+ setGlow();setFlow('off')}
+function snap(p){p.placed=true;p.x=cfg[p.id].target[0];p.y=cfg[p.id].target[1];p.scale=cfg[p.id].scale;
+ place(p);targetMark(p.id,true);updateDots();renderTerminals()}
+function unsnap(p){p.placed=false;p.x=cfg[p.id].home[0];p.y=cfg[p.id].home[1];p.scale=cfg[p.id].homeScale;
+ place(p);targetMark(p.id,false);updateDots();renderTerminals()}
+function svgPoint(evt){const pt=svg.createSVGPoint();pt.x=evt.clientX;pt.y=evt.clientY;const m=svg.getScreenCTM();return m?pt.matrixTransform(m.inverse()):{x:0,y:0}}
+function ease(t){return 1-Math.pow(1-t,3)}
+function flyPart(p,token,duration=450){return new Promise(resolve=>{
+ const sx=p.x,sy=p.y,ss=p.scale,ex=cfg[p.id].target[0],ey=cfg[p.id].target[1],es=cfg[p.id].scale;
+ if(p.placed){resolve();return}p.animating=true;let started=null;
+ function frame(now){
+   if(token!==buildVersion){p.animating=false;resolve();return}
+   if(started===null)started=now;
+   const t=Math.min(1,(now-started)/duration),e=ease(t);
+   p.x=sx+(ex-sx)*e;p.y=sy+(ey-sy)*e-38*Math.sin(Math.PI*t);p.scale=ss+(es-ss)*e;place(p);
+   if(t<1)requestAnimationFrame(frame);else{p.animating=false;snap(p);resolve()}
+ }requestAnimationFrame(frame);
+})}
+function autoBuild(){
+ if(buildPromise)return buildPromise;
+ const token=++buildVersion;
+ buildBusy=true;buttonAuto.classList.add('busy');off();
+ buildPromise=(async()=>{
+  try{for(const id of ['holderL','holderR','ballast','starter','switch','tube']){
+    if(token!==buildVersion)break;
+    await flyPart(parts[id],token,id==='tube'?650:320);
+  }}finally{buildBusy=false;buttonAuto.classList.remove('busy');buildPromise=null;renderTerminals()}
+ })();return buildPromise;
+}
+function pathElement(cls,d,stroke){const p=document.createElementNS(svgNS,'path');
+ p.setAttribute('class','wire-path '+cls);p.setAttribute('d',d);
+ if(stroke)p.setAttribute('stroke',stroke);return p;}
+function wireLayerEntry(w){
+ const g=document.createElementNS(svgNS,'g');g.classList.add('wire-assembly');g.dataset.wire=w.id;
+ const under=pathElement('wire-outline',w.d),main=pathElement('wire-insulation',w.d,w.color),shine=pathElement('wire-sheen',w.d);
+ const current=pathElement('wire-current'+(w.ground?' pe':''),w.d);
+ for(const p of [under,main,shine])g.appendChild(p);
+ current.classList.add('wire-flow');g.appendChild(current);
+ wiresLayer.appendChild(g);wireObjects.push(g);return g;
+}
+function animateWire(w,token){return new Promise(resolve=>{
+ const g=wireLayerEntry(w),path=g.querySelector('.wire-insulation'),length=path.getTotalLength(),duration=620;
+ const strokes=g.querySelectorAll('.wire-outline,.wire-insulation,.wire-sheen');
+ strokes.forEach(el=>{el.style.strokeDasharray=`${length} ${length}`;el.style.strokeDashoffset=String(length)});
+ let start=null;
+ function step(now){
+   if(token!==wireVersion){resolve();return}
+   if(start===null)start=now;
+   const t=Math.min(1,(now-start)/duration);
+   strokes.forEach(el=>el.style.strokeDashoffset=String(length*(1-ease(t))));
+   if(t<1)requestAnimationFrame(step);
+   else{strokes.forEach(el=>{el.style.strokeDasharray='none';el.style.strokeDashoffset='0'});resolve()}
+ }requestAnimationFrame(step);
+})}
+function clearWires(){
+ wireVersion++;wireBusy=false;wirePromise=null;connected=0;selectedTerminal=null;
+ wiresLayer.replaceChildren();wireObjects.length=0;setFlow('off');renderTerminals();updateDots();
+}
+function renderTerminals(){
+ terminalLayer.replaceChildren();if(!allPlaced())return;
+ const next=WIRES[connected];
+ for(const [id,xy] of Object.entries(NODES)){
+  const g=document.createElementNS(svgNS,'g');g.dataset.node=id;
+  const circle=document.createElementNS(svgNS,'circle');circle.setAttribute('cx',xy[0]);circle.setAttribute('cy',xy[1]);
+  circle.setAttribute('r','7.3');circle.classList.add('connection-terminal');
+  if(id==='sL')circle.setAttribute('fill','#d15e53');
+  if(id==='sN')circle.setAttribute('fill','#458bd4');
+  if(id==='sPE'||id==='frame')circle.setAttribute('fill','#78ba7a');
+  const ring=document.createElementNS(svgNS,'circle');ring.setAttribute('cx',xy[0]);ring.setAttribute('cy',xy[1]);ring.setAttribute('r','13');ring.classList.add('connection-ring');
+  if(next&&next.nodes.includes(id))ring.classList.add(id===selectedTerminal?'selected':'next');
+  g.appendChild(circle);g.appendChild(ring);
+  const hit=document.createElementNS(svgNS,'circle');hit.setAttribute('cx',xy[0]);hit.setAttribute('cy',xy[1]);hit.setAttribute('r','18');hit.setAttribute('class','click-area');g.appendChild(hit);
+  g.addEventListener('pointerdown',ev=>ev.stopPropagation());
+  g.addEventListener('click',()=>{void terminalClick(id)});
+  terminalLayer.appendChild(g);
+ }
+}
+async function terminalClick(id){
+ if(wireBusy||!allPlaced()||allWired())return;
+ const w=WIRES[connected];if(!w.nodes.includes(id))return;
+ if(selectedTerminal===null||selectedTerminal===id)selectedTerminal=selectedTerminal===id?null:id;
+ else{selectedTerminal=null;renderTerminals();await nextWire();return}
+ renderTerminals();
+}
+async function nextWire(){
+ if(!allPlaced())await autoBuild();
+ if(!allPlaced()||allWired()||wireBusy)return;
+ wireBusy=true;buttonWire.classList.add('busy');off();
+ const token=wireVersion;
+ try{await animateWire(WIRES[connected],token);if(token===wireVersion){connected++;selectedTerminal=null;updateDots()}}
+ finally{wireBusy=false;buttonWire.classList.remove('busy');renderTerminals()}
+}
+function autoWire(){
+ if(wirePromise)return wirePromise;
+ const token=wireVersion;
+ wirePromise=(async()=>{
+  if(!allPlaced())await autoBuild();
+  if(!allPlaced())return;
+  buttonWireAll.classList.add('busy');
+  try{while(connected<WIRES.length&&wireVersion===token){
+   if(wireBusy){await delay(70);continue}await nextWire();
+  }}finally{buttonWireAll.classList.remove('busy');wirePromise=null;}
+ })();return wirePromise;
+}
+function delay(ms){return new Promise(r=>setTimeout(r,ms))}
+// Time-indexed optical choreography. Phase boundaries follow a teaching model,
+// not a laboratory-level gas discharge or mains transient simulation.
+const choreography={
+ normal:{duration:5.1,steps:[
+ [0,0,0,0,0,0,'glow'],[.25,0,0,.85,0,0,'glow'],[.56,0,.05,1,0,0,'glow'],
+ [.76,0,.12,.18,0,1,'preheat'],[1.08,0,.60,0,0,1,'preheat'],[1.42,0,1,0,0,1,'preheat'],[1.8,0,1,0,0,1,'preheat'],
+ [1.86,0,.82,0,.76,0,'strike'],[1.92,.75,.63,0,1,0,'strike'],[2.01,.11,.37,0,.23,0,'strike'],[2.13,0,.2,.20,0,0,'glow'],
+ [2.40,0,.09,.89,0,0,'glow'],[2.62,0,.16,.96,0,0,'glow'],[2.83,0,.3,0,0,1,'preheat'],[3.13,0,.91,0,0,1,'preheat'],
+ [3.42,0,1,0,0,1,'preheat'],[3.51,.12,.77,0,.9,0,'strike'],[3.57,1,.49,0,1,0,'strike'],
+ [3.65,.21,.23,0,.3,0,'strike'],[3.76,.93,.1,0,.18,0,'strike'],[3.85,.48,.05,0,.08,0,'strike'],
+ [3.96,1,0,0,0,0,'stable'],[4.18,.77,0,0,0,0,'stable'],[4.35,.98,0,0,0,0,'stable'],[5.1,1,0,0,0,0,'stable']
+ ]},
+ aging:{duration:8.1,steps:[
+ [0,0,0,0,0,0,'glow'],[.35,0,.03,1,0,0,'glow'],[.65,0,.05,.86,0,0,'glow'],
+ [.8,0,.13,0,0,1,'preheat'],[1.23,0,.89,0,0,1,'preheat'],[1.75,0,1,0,0,1,'preheat'],
+ [1.88,.18,.68,0,1,0,'strike'],[1.94,.96,.4,0,1,0,'strike'],[2.04,.02,.24,0,.1,0,'strike'],
+ [2.29,0,.08,.8,0,0,'glow'],[2.56,0,.1,1,0,0,'glow'],[2.78,0,.15,0,0,1,'preheat'],
+ [3.14,0,.93,0,0,1,'preheat'],[3.59,0,1,0,0,1,'preheat'],[3.73,.37,.65,0,1,0,'strike'],
+ [3.80,1,.35,0,1,0,'strike'],[3.92,.05,.12,0,.1,0,'strike'],[4.20,0,0,.58,0,0,'glow'],
+ [4.52,0,.08,.96,0,0,'glow'],[4.78,0,.17,.03,0,1,'preheat'],[5.15,0,.94,0,0,1,'preheat'],
+ [5.65,0,1,0,0,1,'preheat'],[5.78,.63,.52,0,.96,0,'strike'],[5.84,.05,.25,0,.3,0,'strike'],
+ [5.96,1,.1,0,.95,0,'strike'],[6.06,.21,0,0,.15,0,'strike'],[6.18,.85,0,0,.12,0,'strike'],
+ [6.29,.33,0,0,.05,0,'strike'],[6.43,1,0,0,0,0,'stable'],[6.64,.53,0,0,0,0,'stable'],
+ [6.84,1,0,0,0,0,'stable'],[8.1,1,0,0,0,0,'stable']
+ ]},
+ fault:{duration:8.5,steps:[
+ [0,0,0,0,0,0,'glow'],[.4,0,0,1,0,0,'glow'],[.8,0,.1,0,0,1,'preheat'],
+ [1.2,0,.88,0,0,1,'preheat'],[1.8,0,1,0,0,1,'preheat'],[1.94,.28,.5,0,.93,0,'strike'],
+ [2.08,0,.08,0,0,0,'glow'],[2.5,0,.02,.89,0,0,'glow'],[2.9,0,.12,0,0,1,'preheat'],
+ [3.45,0,1,0,0,1,'preheat'],[3.82,.17,.48,0,.95,0,'strike'],[3.95,0,.04,0,0,0,'glow'],
+ [4.4,0,0,.90,0,0,'glow'],[4.8,0,.13,0,0,1,'preheat'],[5.3,0,.99,0,0,1,'preheat'],
+ [5.68,.13,.45,0,.98,0,'strike'],[5.82,0,.07,0,0,0,'glow'],[6.2,0,0,.86,0,0,'glow'],
+ [6.6,0,.10,0,0,1,'preheat'],[7.3,0,1,0,0,1,'preheat'],[7.62,.12,.53,0,.92,0,'strike'],
+ [7.78,0,.12,0,0,0,'glow'],[8.5,0,0,0,0,0,'off']
+ ]}
+};
+function getState(t){
+ const keyframes=choreography[ignitionMode].steps;
+ if(t>=keyframes.at(-1)[0])return keyframes.at(-1).slice(1);
+ let a=keyframes[0],b=keyframes.at(-1);
+ for(let i=1;i<keyframes.length;i++)if(t<=keyframes[i][0]){b=keyframes[i];a=keyframes[i-1];break}
+ const x=Math.max(0,Math.min(1,(t-a[0])/(b[0]-a[0])));
+ return [1,2,3,4,5].map(k=>a[k]+(b[k]-a[k])*x).concat([a[6]]);
+}
+function renderIgnition(t){
+ const duration=choreography[ignitionMode].duration;
+ const [lum,fil,st,pulse,closed,phase]=getState(Math.min(duration,t));
+ setGlow(lum,fil,st,pulse,closed,phase,t);setFlow(phase);
+ const ratio=Math.max(0,Math.min(1,t/duration));
+ timelineProgress.style.width=`calc(${ratio*100}% - 6px)`;
+ timelineThumb.style.left=`${ratio*100}%`;
+ timeline.setAttribute('aria-valuenow',String(Math.round(100*ratio)));
+ // In demo mode the lamp stays lit on its own; a faulty lamp remains dark.
+}
+function advanceFrame(now,token){
+ if(token!==igniteVersion)return;
+ if(lastTick===0)lastTick=now;
+ const dt=Math.min(100,now-lastTick);lastTick=now;
+ if(!paused){sequenceClock+=dt/1000*playbackSpeed;
+  const duration=choreography[ignitionMode].duration;
+  if(sequenceClock>=duration)sequenceClock=duration;
+  renderIgnition(sequenceClock);
+ }
+ igniteRaf=requestAnimationFrame(now=>advanceFrame(now,token));
+}
+function startIgnition(){
+ if(!allPlaced()||!allWired())return;
+ off();lit=true;const token=++igniteVersion;sequenceClock=0;lastTick=0;
+ timeline.classList.add('visible');renderIgnition(0);
+ igniteRaf=requestAnimationFrame(now=>advanceFrame(now,token));
+}
+async function runPower(){
+ if(lit){off();return}
+ // One click starts the whole staged demo even if the user has not used the other buttons.
+ if(!allPlaced())await autoBuild();
+ if(!allWired())await autoWire();
+ if(allWired()&&allPlaced())startIgnition();
+}
+function reset(){buildVersion++;wireVersion++;off();buildBusy=false;wireBusy=false;buildPromise=null;wirePromise=null;
+ wiresLayer.replaceChildren();wireObjects.length=0;connected=0;selectedTerminal=null;
+ for(const id of order)unsnap(parts[id]);updateDots();renderTerminals();
+}
+function changeMode(){
+ const at=modeOrder.indexOf(ignitionMode);ignitionMode=modeOrder[(at+1)%modeOrder.length];
+ modeButton.dataset.mode=ignitionMode;
+ modeButton.title='启动模式：'+modeNames[ignitionMode]+'（点击切换）';
+ const icons={normal:'<path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/><circle cx="12" cy="12" r="4"/>',
+ aging:'<path d="M21 12a9 9 0 1 1-3-6.7M21 3v6h-6M12 7v5l3 2"/>',
+ fault:'<path d="M5 5L19 19M19 5L5 19"/><circle cx="12" cy="12" r="10"/>'};
+ modeButton.innerHTML=`<svg viewBox="0 0 24 24">${icons[ignitionMode]}</svg>`;
+ if(lit)startIgnition();
+}
+modeButton.addEventListener('click',changeMode);
+inspectButton.addEventListener('click',()=>{detailOpen=!detailOpen;detailPanel.classList.toggle('visible',detailOpen);inspectButton.setAttribute('aria-pressed',String(detailOpen))});
+pauseButton.addEventListener('click',()=>{
+ if(!lit)return;
+ paused=!paused;pauseButton.setAttribute('aria-pressed',String(paused));
+ pauseButton.innerHTML=paused?'<svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>':'<svg viewBox="0 0 24 24"><path d="M8 5v14M16 5v14"/></svg>';
+ lastTick=0;
+});
+speedButton.addEventListener('click',()=>{playbackSpeed=playbackSpeed===1?.5:playbackSpeed===.5?1.5:1;speedButton.textContent=playbackSpeed+'×'});
+function seekTimeline(x){if(!lit)return;const r=timeline.getBoundingClientRect();sequenceClock=Math.min(1,Math.max(0,(x-r.left)/r.width))*choreography[ignitionMode].duration;lastTick=0;renderIgnition(sequenceClock)}
+timeline.addEventListener('pointerdown',ev=>{timeline.setPointerCapture(ev.pointerId);seekTimeline(ev.clientX)});
+timeline.addEventListener('pointermove',ev=>{if(timeline.hasPointerCapture(ev.pointerId))seekTimeline(ev.clientX)});
+timeline.addEventListener('keydown',ev=>{if(!lit)return;if(ev.key==='ArrowLeft'||ev.key==='ArrowRight'){ev.preventDefault();const delta=ev.key==='ArrowLeft'?-0.2:.2;sequenceClock=Math.max(0,Math.min(choreography[ignitionMode].duration,sequenceClock+delta));renderIgnition(sequenceClock)}});
+buttonAuto.addEventListener('click',()=>{void autoBuild()});
+buttonWire.addEventListener('click',()=>{void nextWire()});
+buttonWireAll.addEventListener('click',()=>{void autoWire()});
+buttonPower.addEventListener('click',()=>{void runPower()});
+buttonReplay.addEventListener('click',async()=>{
+ if(!allPlaced())await autoBuild();if(!allWired())await autoWire();if(allWired())startIgnition();
+});
+buttonReset.addEventListener('click',reset);
+for(const t of document.querySelectorAll('.target')){
+ t.addEventListener('click',()=>{const id=t.dataset.id,p=parts[id];if(p.placed||p.animating||buildBusy)return;
+  off();clearWires();snap(p);
+ });
+}
+layer.addEventListener('pointerdown',evt=>{
+ const hit=evt.target.closest('.part');if(!hit||buildBusy||wireBusy)return;
+ const p=parts[hit.dataset.id];if(p.animating)return;
+ const xy=svgPoint(evt);
+ drag={p,pid:evt.pointerId,ox:xy.x-p.x,oy:xy.y-p.y,downx:xy.x,downy:xy.y,travel:0};
+ p.el.classList.add('dragging');svg.setPointerCapture(evt.pointerId);evt.preventDefault();
+});
+svg.addEventListener('pointermove',evt=>{
+ if(!drag||drag.pid!==evt.pointerId)return;
+ const xy=svgPoint(evt),p=drag.p;
+ drag.travel=Math.max(drag.travel,Math.hypot(xy.x-drag.downx,xy.y-drag.downy));
+ if(drag.travel<6)return;
+ if(p.placed){off();clearWires();p.placed=false;targetMark(p.id,false)}
+ p.x=Math.max(65,Math.min(1375,xy.x-drag.ox));p.y=Math.max(105,Math.min(795,xy.y-drag.oy));p.scale=cfg[p.id].scale;place(p);
+});
+function finishDrag(evt){
+ if(!drag||drag.pid!==evt.pointerId)return;
+ const {p,travel}=drag;p.el.classList.remove('dragging');drag=null;
+ if(travel<8){
+  if(!p.placed){off();clearWires();snap(p)}
+  else if(p.id==='switch')void runPower();
+  return;
+ }
+ const [tx,ty]=cfg[p.id].target;
+ if(Math.hypot(p.x-tx,p.y-ty)<205){off();clearWires();snap(p)}else{off();clearWires();unsnap(p)}
+}
+svg.addEventListener('pointerup',finishDrag);
+svg.addEventListener('pointercancel',finishDrag);
+window.addEventListener('keydown',evt=>{
+ if(evt.code==='Space'&&!['INPUT','TEXTAREA','BUTTON'].includes(document.activeElement?.tagName)){evt.preventDefault();void runPower()}
+ if(evt.code==='Escape')off();
+ if(evt.key==='r'||evt.key==='R'){void runPower()}
+ if(evt.key==='w'||evt.key==='W'){void nextWire()}
+});
+updateDots();renderTerminals();setGlow();
+// Diagnostics for teachers / tests, not visible in the scene.
+window.__fluorescentState=()=>({placed:allPlaced(),wires:connected,totalWires:WIRES.length,lit,mode:ignitionMode,paused,time:sequenceClock,speed:playbackSpeed,inspect:detailOpen});
+})();
+
+</script>
+</body>
+</html>

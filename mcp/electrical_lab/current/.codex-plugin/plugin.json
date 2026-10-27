@@ -1,0 +1,6 @@
+{
+  "name": "electrical-training-lab",
+  "version": "2.0.0",
+  "description": "Vocational industrial automation and robotics training authoring skill with optional local MCP; one live fluorescent-lamp lesson and 46 device-family planning entries",
+  "skills": "./skills/"
+}

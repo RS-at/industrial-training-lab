@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+node_modules/
+
+# fetched at install time by BOOTSTRAP_DSH.ps1 (upstream, BSD-3-Clause)
+mcp/industrial_blender/vendor/dsh-blender-plugin/
+mcp/industrial_blender/backend-work/
+mcp/industrial_blender/logs/
+mcp/industrial_blender/reports/

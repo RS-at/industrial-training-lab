@@ -1,0 +1,60 @@
+{
+  "schema_version": "3.0",
+  "asset_id": "school.pneumatic.fixture_01",
+  "name": "非标气动搬运机构（资料待补全）",
+  "category": "custom_machine",
+  "manufacturer": "",
+  "model": "",
+  "stage": "appearance_draft",
+  "source": {
+    "description": "待补充图片、铭牌及厂商资料",
+    "urls": [],
+    "verified_against_manual": false
+  },
+  "rights": {
+    "status": "unknown",
+    "license": "",
+    "reproduction_allowed": false,
+    "notes": "用户自有照片不代表第三方商标或CAD可再分发"
+  },
+  "geometry": {
+    "type": "generic_enclosure",
+    "width_mm": null,
+    "height_mm": null,
+    "depth_mm": null,
+    "drawing": "2d_svg",
+    "texture_source": "none",
+    "model_source": "original"
+  },
+  "terminals": [],
+  "control": {
+    "io_map": [],
+    "voltage_verified": false,
+    "program_verified": false,
+    "real_device_connection": false
+  },
+  "motion": {
+    "type": "linear",
+    "axis": "x",
+    "min_position": 0,
+    "max_position": 100,
+    "max_speed_per_s": 20,
+    "units": "mm",
+    "verified": false
+  },
+  "evidence": {
+    "photos": [
+      "owner:正面照片_待上传",
+      "owner:侧面照片_待上传"
+    ],
+    "datasheets": [],
+    "wiring_diagrams": [],
+    "videos": [],
+    "measured_dimensions": false
+  },
+  "notes": [
+    "仅可用于教学草模；不可据此对实物接线或运行",
+    "请补正/侧/背面照片、铭牌、接线图、动作视频和尺寸",
+    "当前运动参数100mm/20mm每秒均为说明代码的虚拟教学示例，不是实物参数"
+  ]
+}

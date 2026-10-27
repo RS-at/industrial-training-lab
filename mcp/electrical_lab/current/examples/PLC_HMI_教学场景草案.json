@@ -1,0 +1,33 @@
+{
+  "title": "S7-1200 与昆仑通态 HMI 信号映射（仅草案）",
+  "devices": [
+    "plc.siemens.s7_1200",
+    "hmi.mcgs.touch",
+    "low.contactor",
+    "sensor.limit"
+  ],
+  "plc_tags": [
+    {
+      "name": "MotorStart",
+      "type": "bool"
+    },
+    {
+      "name": "Running",
+      "type": "bool"
+    }
+  ],
+  "hmi_tags": [
+    {
+      "name": "启动按钮",
+      "plc_tag": "MotorStart",
+      "type": "bool"
+    },
+    {
+      "name": "运行指示灯",
+      "plc_tag": "Running",
+      "type": "bool"
+    }
+  ],
+  "status": "spec_only_not_simulated",
+  "warning": "厂家 CPU、触摸屏具体型号及通信配置尚未提供，此文件不能直接下载到实物。"
+}

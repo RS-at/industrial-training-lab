@@ -1,0 +1,54 @@
+{
+  "schema_version": "1.0",
+  "asset_id": "school_custom_pneumatic_fixture_001",
+  "display_name": "非标双气缸搬运实训装置（示例）",
+  "category": "nonstandard_machine",
+  "manufacturer": "校内自制/待确认",
+  "model": "UNKNOWN",
+  "hardware_revision": "unknown",
+  "visibility": "private",
+  "owner": "学校/待授权",
+  "source_files": [],
+  "geometry": {
+    "width_mm": 420,
+    "height_mm": 280,
+    "depth_mm": 150,
+    "drawing_mode": "schematic_only",
+    "dimensions_verified": false
+  },
+  "ports": [
+    {
+      "id": "X1",
+      "label": "X1（占位）",
+      "kind": "unknown",
+      "direction": "unknown",
+      "rated_voltage": null,
+      "position_side": "left",
+      "verified": false,
+      "source_ref": null
+    }
+  ],
+  "behaviors": [],
+  "faults": [],
+  "evidence": {
+    "photos": [],
+    "manuals": [],
+    "wiring_diagrams": [],
+    "measurements": [],
+    "videos": []
+  },
+  "rights": {
+    "source_type": "user_original",
+    "permission": "unknown",
+    "can_redistribute": false,
+    "license_evidence": null
+  },
+  "verification": {
+    "visual": "unverified",
+    "terminals": "unverified",
+    "behavior": "unverified",
+    "safety": "not_assessed"
+  },
+  "implementation_status": "draft_only",
+  "notes": "样板仅用于验证资料格式，参数为示意值，不能用于实际设备接线。"
+}

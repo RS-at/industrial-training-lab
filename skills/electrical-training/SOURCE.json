@@ -1,0 +1,9 @@
+{
+  "name": "electrical-training",
+  "description": "|",
+  "relative": "codex-skills/electrical-training/SKILL.md",
+  "status": "portable-custom",
+  "reason": "保留专用技能和资源；需要的 MCP/本地软件必须实际可用。",
+  "sha256": "88d5d5910228d842fe3f2794a6a55db400de8d252d7c4089e194807d6228ef05",
+  "claude_name": "electrical-training"
+}

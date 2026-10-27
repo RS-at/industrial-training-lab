@@ -1,0 +1,8 @@
+{
+  "name": "sixtysevenlf/dsh-blender-plugin",
+  "repository": "https://github.com/sixtysevenlf/dsh-blender-plugin.git",
+  "commit": "f044a019bbb97513443b24cc5ebcad111a002628",
+  "license": "BSD-3-Clause",
+  "version_at_review": "2.5.0",
+  "usage": "Exact upstream source is retrieved by INSTALL_WINDOWS.ps1, not reimplemented or bundled; preserve upstream LICENSE and notices."
+}
