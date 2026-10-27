@@ -92,8 +92,9 @@ cd mcp/electrical_lab/current && python -m pytest tests
 
 把 `skills/` 下需要的文件夹复制到 `~/.claude/skills/`（Claude Code）或 `~/.codex/skills/`（Codex）。每个 skill 先读同目录的 `CLAUDE-ADAPTER.md`。Skill 中的 `<repo>`、`<BLENDER_EXE>`、`<local asset library>` 等占位符需要换成你自己的路径。
 
-## 第三方与许可
+## 许可
+
+本仓库以 [MIT](LICENSE) 许可发布（代码与文档由作者借助 Codex 编写）。第三方部分保留各自许可：
 
 - `vendor/dsh-blender-plugin`：© sixtyseven67，BSD-3-Clause，安装时下载，不包含在本仓库。
 - `mcp/industrial_blender/skills/blender-modeling`：MIT 许可项目的派生作品，保留原 `LICENSE` 和 `NOTICE.md`。
-- 其余代码与文档由作者借助 Codex 编写。
